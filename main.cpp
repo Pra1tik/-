@@ -2,13 +2,23 @@
 Game* pGame=0;
 int main(int argc,char* argv[])
 {
+    const int FPS=60;
+    Uint32 framestart,frameTime;
+    const int frameDelay=1000/FPS;
     pGame= new Game();
-    pGame->init("Chapter1",100,100,WindowWidth,WindowHeight,true);
+    int count=0;
+    pGame->init("Chapter1",100,100,WindowWidth,WindowHeight,false);
     while(pGame->running())
     {
+        std::cout << count++ <<std::endl;
+        framestart=SDL_GetTicks();
         pGame->handleEvents();
         pGame->update();
         pGame->render();
+        frameTime=SDL_GetTicks()-framestart;
+        if (frameDelay>frameTime){
+            SDL_Delay(frameDelay-frameTime);
+        }
     }
     pGame->clean();
     return 0;
