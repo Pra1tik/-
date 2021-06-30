@@ -10,7 +10,6 @@ int main(int argc,char* argv[])
     pGame->init("Chapter1",100,100,WindowWidth,WindowHeight,false);
     while(pGame->running())
     {
-        std::cout << count++ <<std::endl;
         framestart=SDL_GetTicks();
         pGame->handleEvents();
         pGame->update();
