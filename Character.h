@@ -1,5 +1,5 @@
 #pragma once
-
+#include"Texture.h"
 
 class Character
 {
@@ -19,4 +19,5 @@ class Character
     private:
         int mPosX, mPosY;
         int mVelX, mVelY;
+        TextureWrapper* mTexture;
 };
