@@ -38,6 +38,18 @@ class TextureWrapper
         int getWidth();
         int getHeight();
 
+        // Making singeleton
+        static TextureWrapper* pInstance;
+        static TextureWrapper* Instance()
+        {
+            if (pInstance == NULL)
+            {
+                pInstance = new TextureWrapper;
+                return pInstance;
+            }
+            return pInstance;
+        }
+
     private:
         SDL_Texture* mTexture;
 
@@ -45,7 +57,7 @@ class TextureWrapper
         int mWidth, mHeight;
 };
 
-
+TextureWrapper* TextureWrapper::pInstance = 0;
 
 TextureWrapper::TextureWrapper()
 {
@@ -66,6 +78,7 @@ bool TextureWrapper::loadFromFile(std::string path)
     //Get rid of prexisting textures
     free();
 
+    SDL_Renderer* ren;
     SDL_Texture* newTexture = NULL;
 
     //Load image at specified path
