@@ -5,18 +5,13 @@
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
 
-//Remove it later
-//SDL objects
-SDL_Window* gWindow = NULL;
-SDL_Renderer* gRenderer = NULL;
-TTF_Font* gFont = NULL;
 
 
 class TextureWrapper
 {
     public:
         //Initializes variables
-        TextureWrapper();
+        TextureWrapper(SDL_Renderer* renderer, TTF_Font* font);
 
         //Deallocates memory
         ~TextureWrapper();
@@ -39,6 +34,8 @@ class TextureWrapper
         int getHeight();
 
     private:
+        SDL_Renderer* mRenderer = NULL;
+        TTF_Font* mFont = NULL;
         SDL_Texture* mTexture;
 
         //Image dimensions
@@ -47,9 +44,11 @@ class TextureWrapper
 
 
 
-TextureWrapper::TextureWrapper()
+TextureWrapper::TextureWrapper(SDL_Renderer* renderer, TTF_Font* font)
 {
     //Initialize
+    mRenderer = renderer;
+    mFont = font;
     mTexture = NULL;
     mWidth = 0;
     mHeight = 0;
@@ -82,7 +81,7 @@ bool TextureWrapper::loadFromFile(std::string path)
     }
 
     //Create texture
-    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+    newTexture = SDL_CreateTextureFromSurface(mRenderer, loadedSurface);
     if(newTexture == NULL)
     {
         std::cout << "Error creating texture: " << SDL_GetError() << std::endl;
@@ -108,7 +107,7 @@ bool TextureWrapper::loadFromRenderedText(std::string textureText, SDL_Color tex
     free();
 
     //Render text surface
-    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, textureText.c_str(), textColor);
     if(textSurface == NULL)
     {
         std::cout << "Failed to create surface: " << TTF_GetError() << std::endl;
@@ -116,7 +115,7 @@ bool TextureWrapper::loadFromRenderedText(std::string textureText, SDL_Color tex
     else
     {
         //Create texture
-        mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+        mTexture = SDL_CreateTextureFromSurface(mRenderer, textSurface);
         if(mTexture == NULL)
         {
             std::cout << "Failed to create texture: " << SDL_GetError() << std::endl;
@@ -158,7 +157,7 @@ void TextureWrapper::render(int x, int y, SDL_Rect* clip, int scale, double angl
         renderQuad.w = clip->w * scale;
         renderQuad.h = clip->h * scale;
     }
-    SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
+    SDL_RenderCopyEx(mRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
 
