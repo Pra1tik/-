@@ -1,5 +1,8 @@
 #include "game.h"
+#include "player.h"
+#include "Character.h"
 
+player* play;
 
 bool Game::init(const char* title,int xpos, int ypos, int height, int width, bool flags)
 {
@@ -29,6 +32,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         else{
             return false;
         }
+        play= new player("assets/player.png","Player1");
         runGame= true;
         return true;
     }
@@ -37,7 +41,12 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 void Game::render()
 {
     SDL_RenderClear(pRenderer);
+    play->render();
     SDL_RenderPresent(pRenderer);
+}
+void Game::update()
+{
+    play->update();
 }
 void Game::clean()
 {
