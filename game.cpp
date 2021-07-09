@@ -1,8 +1,9 @@
 #include "game.h"
-
+#include "Player.h"
 
 bool Game::init(const char* title,int xpos, int ypos, int height, int width, bool flags)
 {
+   
     Uint32 windowState;
     if (!flags)
     {
@@ -20,6 +21,8 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
             pRenderer=SDL_CreateRenderer(pWindow,-1,0);
             if (pRenderer!=0){
                 SDL_SetRenderDrawColor(pRenderer,0,0,255,255);
+                player = new Player(pRenderer);
+
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
@@ -32,27 +35,43 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         runGame= true;
         return true;
     }
+
     return false;
 }
 void Game::render()
 {
     SDL_RenderClear(pRenderer);
+    player->render();
     SDL_RenderPresent(pRenderer);
 }
+
+void Game::update()
+{
+    player->update();
+}
+
 void Game::clean()
 {
     SDL_DestroyRenderer(pRenderer);
     SDL_DestroyWindow(pWindow);
     SDL_Quit();
 }
-void Game::handleEvents()
+void Game::handleEvents(float deltaTime)
 {
+    dt = deltaTime;
     SDL_Event event;
-    while (SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event) != 0)
     {
         if (event.type == SDL_QUIT)
         {
             runGame=false;
         }
+        else
+        {
+           
+            player->handleInput(event, dt);
+
+        }
     }
+
 }
