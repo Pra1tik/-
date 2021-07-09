@@ -61,20 +61,15 @@ void Player::handleInput(SDL_Event& e, float deltaTime)
     {
         mAcc.x = 1;
     }
-    else if(!state[SDL_SCANCODE_RIGHT])
-    {
-        mAcc.x = 0;
-    }
-
-
-    if(state[SDL_SCANCODE_LEFT])
+    else if(state[SDL_SCANCODE_LEFT])
     {
         mAcc.x = -1;
     }
-    else if(state[SDL_SCANCODE_LEFT])
+    else if(!state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_RIGHT])
     {
         mAcc.x = 0;
     }
+
 
     if(jumpFlag == false && state[SDL_SCANCODE_SPACE])
     {
