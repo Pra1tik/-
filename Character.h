@@ -1,5 +1,6 @@
 #pragma once
-#include"Texture.h"
+#include "Texture.h"
+#include "math.h"
 
 class Character
 {
@@ -9,15 +10,18 @@ class Character
         virtual void update() {};
         virtual void render() {};
 
-        void setPosition(int x, int y) { mPosX = x; mPosY = y; }
-        void setVelocity(int x, int y) { mVelX = x; mVelY = y; }
-        int getPositionX() {return mPosX; }
-        int getPositionY() {return mPosY; }
-        int getVelocityX() {return mVelX; }
-        int getVelocityY() {return mVelY; }
+        void setPosition(int x, int y) { mPos.x = x; mPos.y = y; }
+        void setVelocity(int x, int y) { mVel.x = x; mVel.y = y; }
+        void setAccleration(int x, int y) {mAcc.x = x; mAcc.y = y; }
+        vec getPosition() { return mPos; }
+        vec getVelocity() { return mVel; }
+        vec getAccleration() { return mAcc; }
+        void setTexture(TextureWrapper* texture) { mTexture = texture; }
+        TextureWrapper* getTexture() { return mTexture; }
 
-    private:
-        int mPosX, mPosY;
-        int mVelX, mVelY;
-        TextureWrapper* mTexture;
+    protected:
+        vec mPos;
+        vec mVel;
+        vec mAcc;
+        TextureWrapper* mTexture = NULL;
 };
