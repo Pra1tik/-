@@ -10,8 +10,7 @@ int main(int argc,char* argv[])
     pGame= new Game();
     
 
-    int count=0;
-    bool v = pGame->init("The Game",100,100,WindowWidth,WindowHeight,false);
+    pGame->init("The Game",100,100,WindowWidth,WindowHeight,false);
 
     while(pGame->running())
     {

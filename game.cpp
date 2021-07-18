@@ -54,8 +54,11 @@ void Game::render()
 
 void Game::update()
 {
-   if(!(colX&&colY)) {player->update(tileBelow);}
-//    else if (colX&&colY) {player->CollisionUpdate(offsetValue);}
+    for(int i(0);i<TotalTilesRow;i++){if (tilesOfCollidedRow[i]>0){tileFlag=true;break;} }
+    if (tileFlag) {player->update(playerXpos,tilesOfCollidedRow);}
+    else {player->update(playerXpos,NULL);}
+    for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=0;}
+    tileFlag=false;
 }
 
 void Game::clean()
@@ -87,56 +90,40 @@ void Game::handleEvents(float deltaTime)
 
 void Game::Collider(Player* player,Background* back)
 {   
-    // vec collidedTile;
     vec player1=player->getPosition();
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
     
-    for (int row {0};row<12;row++)
+    for (int row {0};row<TotalTilesColumn;row++)
     {
-        for ( int column{0};column<16;column++)
+        for ( int column{0};column<TotalTilesRow;column++)
         {
-            SDL_Rect pTil{back->getPosXTiles(row,column),back->getPosYTiles(row,column),48,48};
+            SDL_Rect pTil{back->getPosXTiles(row,column),back->getPosYTiles(row,column)-25,50,50};  // y is subtracted by the half of tilewidth to make player stay on the top of tile
             tCollider->setRect(pTil);
-            vec tile={column,row};
             // std::cout<<back->getPosYTiles(row,column)<<std::endl;
             if (back->getTileNum(row,column)==1)
             {
             if(pCollider->checkCollision(*tCollider,0.0f))
             {
-                
-                colY=true;
-                colX=true;
-                // std::cout << tCollider->GetPositionY()<<"   "<<row<<std::endl;
-                // collidedTile.y=row;
-                // collidedTile.x=column;
+                for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=(back->getTileNum(row,i));}
                 vec offset=pCollider->getOffset();
                 if (pCollider->GetPositionX()>tCollider->GetPositionX()){offset.x*=-1;}
+                // if (pCollider->GetPositionX()>tCollider->GetPositionX()+50){offset.x/=2;}
                 if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+48){offset.x=0;}
                 if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+48){offset.x=0;}
-                // if (pCollider->GetPositionY()>tCollider->GetPositionY() && pCollider->GetPositionY()<tCollider->GetPositionY()+48){offset.y=0;}
-                if (pCollider->GetPositionY()>tCollider->GetPositionY()){offset.y*=-1;}
-                // if (pCollider->GetPositionY()<tCollider->GetPositionY()+48){offset.y=0;}
-                // std::cout << "collision detected in y-axis with tile "<<column<<"   "<<row<<"     "<<count++<<std::endl;
-                player->CollisionUpdate(offset,tile);
+                if (pCollider->GetPositionY()>tCollider->GetPositionY())
+                {
+                    offset.y*=-1;
+                    for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]= 2;} //while jumping make the tiles as open space
+                }
+                
+                player->CollisionUpdate(offset);
                 break;
             }
             else
             {
-                tileBelow=back->getTileNum(row+1,column);
-                colY=false;
-                colX=false;
+                playerXpos=pCollider->GetPositionX();
             }
-            // if(player1.x+80>=TileX && TileX+48>=player1.x )
-            // {
-            //     colXPos=true;
-            //     collidedTileX=column;
-            //     std::cout << "collision detected in x-axis with tile "<<row<<"   "<<column<<"     "<<count++<<std::endl;
-            //     break;
-            // }
-            // else{
-            //     colXPos=false;
-            // }
             }     
         }
     }

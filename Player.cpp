@@ -1,73 +1,74 @@
 #include "Player.h"
 
-
 Player::Player(SDL_Renderer* renderer)
 {
-    //TextureWrapper object
-    //std::cout << "B\n";
 
     mTexture = new TextureWrapper(renderer);
     
     mTexture->loadFromFile("assets/player.png");
 
     //Set initial position
-    setPosition(100, 300);
+    setPosition(100, 00);
     setVelocity(10, imp);
     setAccleration(0, 0);
 
-    //std::cout << "B\n";
 
 }
 
-void Player::CollisionUpdate(vec offset,vec tile)
+void Player::CollisionUpdate(vec offset,int nextTile, vec tile)
 {
-    // std::cout<<tile.y<<std::endl;
-    // // if(mAcc.y == 1)
-    // // {
-    // //     mVel.y = (mVel.y - gravity);
-    // //     mPos.y -= (mVel.y * dt); 
-    // // }
 
-    // if(mPos.y > offset.y+300)  //this needs to be change after calculating collisions
-    if(offset.x==0)  //this needs to be change after calculating collisions
+    if(offset.x==0)
     {
         
         mVel.y = imp;
         mAcc.y = 0;
-        mPos.y += (offset.y-25);
+        mPos.y += (offset.y);
     }
-    // if (tile.y != 0)
+
+    // if(offset.y ==0)
     // {
-    //     mPos.y= tile.y*50+290-110;
+    //     mVel.y = imp;
+    //     mAcc.y = 0;
+    //     mPos.y = 600;
     // }
-    if(offset.y ==0)  //this needs to be change after calculating collisions
-    {
-        mVel.y = imp;
-        mAcc.y = 0;
-        mPos.y = 600;
-    }
-    // mPos.y += offset.y*dt;
+
     mPos.x += offset.x;
 }
 
 
-void Player::update(int tileNum)
+void Player::update(int playerXpos,int tileRow[TotalTilesRow])
 {
-
-    // Update the positions
-    if(mAcc.y == 1)
+    // for (int i{0};i<TotalTilesRow;i++){std::cout<< tileRowPlayerClass[i]<<"  ";} std::cout<<"\n";
+    if (tileRow!=NULL) {for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=tileRow[i];}}
+    if (tileRowPlayerClass[((playerXpos)/TileWidth)%16]==1 || tileRowPlayerClass[((playerXpos+40)/TileWidth)%16]==1) {falling=false;}
+    else if (tileRowPlayerClass[((playerXpos)/TileWidth)%16]==2)
     {
+        if(mVel.y>0){mVel.y=fall;}
+        falling=true;
+    }
+
+    if(falling)
+    {
+        mVel.y = (mVel.y - gravity);
+        mPos.y -= mVel.y * dt;
+        // if (mVel.y<0) {falling=false; mVel.y=imp;}
+    }
+    if(mAcc.y == 1) 
+    {
+        falling=false;
+        for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=0;}
         mVel.y = (mVel.y - gravity);
         mPos.y -= mVel.y * dt; 
     }
 
-    if(mPos.y > 600)  //this needs to be change after calculating collisions
-    {
-        mVel.y = imp;
-        mAcc.y = 0;
-        mPos.y = 600;
-    }
-    
+    // if(mPos.y > 600)  //uncomment if want to put a base level
+    // {
+    //     mVel.y = imp;
+    //     mAcc.y = 0;
+    //     mPos.y = 600;
+    //     falling=false;
+    // }
 
     mPos.x += mAcc.x * mVel.x;
 }
@@ -115,5 +116,4 @@ void Player::handleInput(SDL_Event& e, float deltaTime)
     {
         jumpFlag = false;
     }
-
 }

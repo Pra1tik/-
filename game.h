@@ -3,9 +3,11 @@
 //#pragma once
 #include <SDL2/SDL.h>
 #include<iostream>
+#include "math.h"
+#include "defaultVar.h"
+#include <vector>
 
-#define WindowWidth 1200
-#define WindowHeight 1200
+
 
 class Game{
     public:
@@ -17,14 +19,25 @@ class Game{
         void handleEvents(float deltaTime);
         void clean();
         bool running(){return runGame;}
+        void Collider(class Player*, class Background*);
     private:
         SDL_Window* pWindow;
         SDL_Renderer* pRenderer;
+
+        // pointer variables for different classes
+        class Player* player;
+        class Background* back;
+        class collider* pCollider;
+        class collider* tCollider;
+
         float dt = 0;
         bool runGame;
-        class Player* player;
+        int tileNum;
+        vec offset;
+        int tilesOfCollidedRow[WindowWidth/TileWidth];
+        bool tileFlag;
+        int playerXpos;
 };
 
-// typedef Game NewGame;
 
 #endif
