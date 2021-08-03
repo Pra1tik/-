@@ -1,15 +1,17 @@
 #include "Player.h"
+#include "defaultVar.h"
 
 Player::Player(SDL_Renderer* renderer)
 {
 
     mTexture = new TextureWrapper(renderer);
+
     
-    mTexture->loadFromFile("assets/player.png");
+    mTexture->loadFromFile("assets/player_tilesheet.png");
 
     //Set initial position
-    setPosition(100, 00);
-    setVelocity(10, imp);
+    setPosition(100, 400);
+    setVelocity(5, 0);
     setAccleration(0, 0);
 
 
@@ -17,32 +19,49 @@ Player::Player(SDL_Renderer* renderer)
 
 void Player::CollisionUpdate(vec offset,int nextTile, vec tile)
 {
-
-    if(offset.x==0)
+    // std::cout <<"collidion" <<std::endl;
+    if  (abs(offset.y) >= TileWidth)
     {
-        
+        // mVel.y=0;
+        offset.y=0;
+    }
+
+    if(offset.x== 0 || abs(offset.x) == mVel.x)
+    {
+        isJumping=false;
         mVel.y = imp;
         mAcc.y = 0;
         mPos.y += (offset.y);
     }
+    // else if(abs(offset.x) == mVel.x)
+    // {
+    //     mAcc.y = 0;
+    //     mVel.y=imp;
+    //     mPos.y += (mVel.y)*dt;
+    // }
+    
 
-    // if(offset.y ==0)
+
+    // if(offset.y ==0) abs(offset.x)==3*mVel.x 
     // {
     //     mVel.y = imp;
     //     mAcc.y = 0;
     //     mPos.y = 600;
     // }
 
+    // std::cout <<offset.x <<"    " <<offset.y <<std::endl;
+    // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
 }
 
 
 void Player::update(int playerXpos,int tileRow[TotalTilesRow])
 {
+
     // for (int i{0};i<TotalTilesRow;i++){std::cout<< tileRowPlayerClass[i]<<"  ";} std::cout<<"\n";
     if (tileRow!=NULL) {for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=tileRow[i];}}
-    if (tileRowPlayerClass[((playerXpos)/TileWidth)%16]==1 || tileRowPlayerClass[((playerXpos+40)/TileWidth)%16]==1) {falling=false;}
-    else if (tileRowPlayerClass[((playerXpos)/TileWidth)%16]==2)
+    if (tileRowPlayerClass[((playerXpos)/TileWidth)%25]==1 || tileRowPlayerClass[((playerXpos+40)/TileWidth)%25]==1) {falling=false;}
+    else if (tileRowPlayerClass[((playerXpos)/TileWidth)%25]==2)
     {
         if(mVel.y>0){mVel.y=fall;}
         falling=true;
@@ -50,16 +69,18 @@ void Player::update(int playerXpos,int tileRow[TotalTilesRow])
 
     if(falling)
     {
+        for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=0;}
         mVel.y = (mVel.y - gravity);
-        mPos.y -= mVel.y * dt;
-        // if (mVel.y<0) {falling=false; mVel.y=imp;}
+        if (mVel.y>0){mPos.y -= mVel.y * dt; }
+        else {mPos.y -= 2*mVel.y * dt; }
     }
     if(mAcc.y == 1) 
     {
         falling=false;
         for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=0;}
         mVel.y = (mVel.y - gravity);
-        mPos.y -= mVel.y * dt; 
+        if (mVel.y>0){mPos.y -= mVel.y * dt; }
+        else {mPos.y -= 2*mVel.y * dt; }
     }
 
     // if(mPos.y > 600)  //uncomment if want to put a base level
@@ -76,8 +97,19 @@ void Player::update(int playerXpos,int tileRow[TotalTilesRow])
 
 void Player::render()
 {
+    if (mAcc.x == 1)
+    {
+        flip = SDL_FLIP_NONE;
+    }
+    else if (mAcc.x == -1)
+    {
+        flip = SDL_FLIP_HORIZONTAL;
+    }
+    double angle = 0.0;
+    SDL_Rect source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
+    SDL_Rect dest = {mPos.x,mPos.y,playerWidth,playerHeight};
     //render the texture
-    mTexture->render(mPos.x, mPos.y);
+    mTexture->render(source,dest,angle,flip);
 }
 
 
@@ -102,13 +134,34 @@ void Player::handleInput(SDL_Event& e, float deltaTime)
     }
 
 
-    if(jumpFlag == false && state[SDL_SCANCODE_SPACE])
+    if(state[SDL_SCANCODE_SPACE])
     {
         mAcc.y = 1;
-        jumpFlag = true;
+        isJumping = true;
     }
-    else if(!state[SDL_SCANCODE_SPACE])
+}
+
+void Player::animate()
+{
+    if (abs(mAcc.x) == 1 && !isJumping)
     {
-        jumpFlag = false;
+        currentFrame.x = (int) ((SDL_GetTicks()/200)%2);
+        currentFrame.y = 1;
     }
+    else if (isJumping && mVel.y > 0)
+    {
+        currentFrame.x = 1;
+        currentFrame.y = 0;
+    }
+    else if (falling && mVel.y < 0)
+    {
+        currentFrame.x = 2;
+        currentFrame.y = 0;
+    }
+    else if (mAcc.x == 0 && mAcc.y == 0)
+    {
+        currentFrame.x = 0;
+        currentFrame.y = 0;
+    }
+
 }

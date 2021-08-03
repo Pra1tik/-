@@ -36,6 +36,7 @@ class Game{
         vec offset;
         int tilesOfCollidedRow[WindowWidth/TileWidth];
         bool tileFlag;
+        bool breakflag=false;
         int playerXpos;
 };
 

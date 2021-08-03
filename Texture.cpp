@@ -117,6 +117,11 @@ void TextureWrapper::render(int x, int y, SDL_Rect* clip, int scale, double angl
     SDL_RenderCopyEx(mRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
+void TextureWrapper::render(SDL_Rect src, SDL_Rect dest, double angle, SDL_RendererFlip flip)
+{
+    SDL_RenderCopyEx(mRenderer, mTexture ,&src, &dest, angle, NULL, flip);
+}
+
 
 int TextureWrapper::getWidth()
 {

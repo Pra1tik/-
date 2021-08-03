@@ -9,3 +9,6 @@
 
 #define TotalTilesRow WindowWidth/TileWidth
 #define TotalTilesColumn WindowHeight/TileHeight
+
+#define playerWidth 80
+#define playerHeight 110

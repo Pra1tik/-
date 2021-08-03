@@ -54,6 +54,7 @@ void Game::render()
 
 void Game::update()
 {
+    player->animate();
     for(int i(0);i<TotalTilesRow;i++){if (tilesOfCollidedRow[i]>0){tileFlag=true;break;} }
     if (tileFlag) {player->update(playerXpos,tilesOfCollidedRow);}
     else {player->update(playerXpos,NULL);}
@@ -94,7 +95,7 @@ void Game::Collider(Player* player,Background* back)
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
     
-    for (int row {0};row<TotalTilesColumn;row++)
+    for (int row {TotalTilesColumn};row>0;row--)
     {
         for ( int column{0};column<TotalTilesRow;column++)
         {
@@ -109,15 +110,17 @@ void Game::Collider(Player* player,Background* back)
                 vec offset=pCollider->getOffset();
                 if (pCollider->GetPositionX()>tCollider->GetPositionX()){offset.x*=-1;}
                 // if (pCollider->GetPositionX()>tCollider->GetPositionX()+50){offset.x/=2;}
-                if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+48){offset.x=0;}
-                if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+48){offset.x=0;}
-                if (pCollider->GetPositionY()>tCollider->GetPositionY())
+                if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+50){offset.x=0;}
+                if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+50){offset.x=0;}
+                if (pCollider->GetPositionY() >tCollider->GetPositionY())
                 {
                     offset.y*=-1;
                     for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]= 2;} //while jumping make the tiles as open space
                 }
-                
+                std::cout <<pCollider->GetPositionY()+110 << "  " <<tCollider->GetPositionY()+25<<"    " <<offset.y<<std::endl;
                 player->CollisionUpdate(offset);
+                // std::cout  << column <<"    "<<row <<std::endl;
+                breakflag=true;
                 break;
             }
             else
@@ -125,6 +128,11 @@ void Game::Collider(Player* player,Background* back)
                 playerXpos=pCollider->GetPositionX();
             }
             }     
+        }
+        if (breakflag)
+        {
+            breakflag=false;
+            break;
         }
     }
 }
