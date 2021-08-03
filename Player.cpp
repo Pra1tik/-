@@ -19,37 +19,34 @@ Player::Player(SDL_Renderer* renderer)
 
 void Player::CollisionUpdate(vec offset,int nextTile, vec tile)
 {
+
     // std::cout <<"collidion" <<std::endl;
-    if  (abs(offset.y) >= TileWidth)
+    if  (abs(offset.y) >= TileHeight)
     {
-        // mVel.y=0;
         offset.y=0;
     }
-
-    if(offset.x== 0 || abs(offset.x) == mVel.x)
+    if  (abs(offset.x) >= TileWidth)
     {
+        offset.x=0;
+    }
+    if (abs(offset.x) == mVel.x)
+    {
+        mVel.y=0;
+        mPos.y +=offset.y;
+        isJumping = false;
+        falling = false;
+    }
+    else if(offset.x== 0 || abs(offset.x)==mVel.x)
+    {
+        mVel.x =5;
         isJumping=false;
         mVel.y = imp;
         mAcc.y = 0;
         mPos.y += (offset.y);
     }
-    // else if(abs(offset.x) == mVel.x)
-    // {
-    //     mAcc.y = 0;
-    //     mVel.y=imp;
-    //     mPos.y += (mVel.y)*dt;
-    // }
-    
 
 
-    // if(offset.y ==0) abs(offset.x)==3*mVel.x 
-    // {
-    //     mVel.y = imp;
-    //     mAcc.y = 0;
-    //     mPos.y = 600;
-    // }
-
-    // std::cout <<offset.x <<"    " <<offset.y <<std::endl;
+    std::cout <<offset.x <<"    " <<offset.y <<std::endl;
     // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
 }
