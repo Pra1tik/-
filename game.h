@@ -1,7 +1,7 @@
 #ifndef _Game_
 #define _Game_
-//#pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include<iostream>
 #include "math.h"
 #include "defaultVar.h"
@@ -21,6 +21,15 @@ class Game{
         bool running(){return runGame;}
         void Collider(class Player*, class Background*);
     private:
+        enum Game_States
+        {
+            START_SCREEN=0,
+            SELECT_SCREEN,
+            GAME_SCREEN,
+            INSTRUCTIONS_SCREEN,
+            PAUSE_SCREEN,
+            EXIT_SCREEN
+        };
         SDL_Window* pWindow;
         SDL_Renderer* pRenderer;
 
@@ -29,6 +38,10 @@ class Game{
         class Background* back;
         class collider* pCollider;
         class collider* tCollider;
+        class StartScreen* startScreen;
+        class SelectScreen* selectScreen;
+        class InstructionScreen* controls;
+        class PauseScreen* paused;
 
         float dt = 0;
         bool runGame;
@@ -38,6 +51,8 @@ class Game{
         bool tileFlag;
         bool breakflag=false;
         int playerXpos;
+        Game_States currentGameState;
+        vec mousePos;
 };
 
 

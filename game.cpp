@@ -2,6 +2,10 @@
 #include "Player.h"
 #include "Tilemap.h"
 #include "collider.h"
+#include "StartScreen.h"
+#include "SelectScreen.h"
+#include "InstructionScreen.h"
+#include "PauseState.h"
 
 bool Game::init(const char* title,int xpos, int ypos, int height, int width, bool flags)
 {
@@ -30,6 +34,11 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
                 return false;
             }
+            if (TTF_Init() == -1)
+            {
+                std::cout << "Error initializing ttf" << TTF_GetError() << std::endl;
+                return false;
+            }
         }
         else{
             return false;
@@ -38,7 +47,12 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         back->load();
         pCollider= new collider();
         tCollider= new collider();
+        startScreen = new StartScreen(pRenderer);
+        selectScreen = new SelectScreen(pRenderer);
+        controls = new InstructionScreen(pRenderer);
+        paused = new PauseScreen(pRenderer);
         runGame= true;
+        currentGameState = START_SCREEN;
         return true;
     }
 
@@ -47,19 +61,51 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 void Game::render()
 {
     SDL_RenderClear(pRenderer);
-    back->render();
-    player->render();
+    switch (currentGameState)
+    {
+        case START_SCREEN:
+            startScreen->render();
+            break;
+        case GAME_SCREEN:
+            back->render();
+            player->render();
+            break;
+        case SELECT_SCREEN:
+            selectScreen->render();
+            break;
+        case INSTRUCTIONS_SCREEN:
+            controls->render();
+            break;
+        case PAUSE_SCREEN:
+            paused->render();
+            break;
+        default:
+            break;
+    };
     SDL_RenderPresent(pRenderer);
 }
 
 void Game::update()
 {
-    player->animate();
-    for(int i(0);i<TotalTilesRow;i++){if (tilesOfCollidedRow[i]>0){tileFlag=true;break;} }
-    if (tileFlag) {player->update(playerXpos,tilesOfCollidedRow);}
-    else {player->update(playerXpos,NULL);}
-    for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=0;}
-    tileFlag=false;
+    switch (currentGameState)
+    {
+        case (GAME_SCREEN):
+            player->animate();
+            for(int i(0);i<TotalTilesRow;i++){if (tilesOfCollidedRow[i]>0){tileFlag=true;break;} }
+            if (tileFlag) {player->update(playerXpos,tilesOfCollidedRow);}
+            else {player->update(playerXpos,NULL);}
+            for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=0;}
+            tileFlag=false;
+            break;
+        case (START_SCREEN):
+            break;
+        case (SELECT_SCREEN):
+            break;
+        case (PAUSE_SCREEN):
+            break;
+        default:
+            break;
+    }
 }
 
 void Game::clean()
@@ -70,17 +116,74 @@ void Game::clean()
 }
 void Game::handleEvents(float deltaTime)
 {
+    SDL_GetMouseState(&mousePos.x,&mousePos.y);
     dt = deltaTime;
     SDL_Event event;
     while (SDL_PollEvent(&event) != 0)
     {
-        if (event.type == SDL_QUIT)
+        if (event.type == SDL_QUIT || currentGameState == EXIT_SCREEN)
         {
+
             runGame=false;
         }
-        else
+        else if (event.key.keysym.sym== SDLK_SPACE && currentGameState == START_SCREEN)
         {
-           
+
+            currentGameState = SELECT_SCREEN;
+        }
+        else if(currentGameState == SELECT_SCREEN && selectScreen->isInsidePlay(mousePos))
+        {
+            if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
+            {
+    
+                currentGameState = GAME_SCREEN;
+            }
+        }
+        else if(currentGameState == SELECT_SCREEN && selectScreen->isInsideExit(mousePos))
+        {
+            if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
+            {
+    
+                currentGameState = EXIT_SCREEN;
+            }
+        }
+        else if(currentGameState == SELECT_SCREEN && selectScreen->isInsideInstruction(mousePos))
+        {
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+    
+                currentGameState = INSTRUCTIONS_SCREEN;
+            }
+        }
+        else if(currentGameState == INSTRUCTIONS_SCREEN && controls->isInsideReturn(mousePos))
+        {
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+    
+                currentGameState = SELECT_SCREEN;
+            }
+        }
+        else if (currentGameState == GAME_SCREEN && event.key.keysym.sym == SDLK_ESCAPE)
+        {
+            currentGameState = PAUSE_SCREEN;
+        }
+        else if (currentGameState ==  PAUSE_SCREEN && paused->isInsideResume(mousePos))
+        {
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+                currentGameState = GAME_SCREEN;
+            }
+        }
+        else if (currentGameState ==  PAUSE_SCREEN && paused->isInsideExit(mousePos))
+        {
+            if(event.button.button == SDL_BUTTON_LEFT)
+            {
+                currentGameState = EXIT_SCREEN;
+            }
+        }
+        else if (currentGameState == GAME_SCREEN)
+        {
+
             player->handleInput(event, dt);
 
         }
@@ -117,8 +220,7 @@ void Game::Collider(Player* player,Background* back)
                     offset.y*=-1;
                     for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]= 2;} //while jumping make the tiles as open space
                 }
-                std::cout <<pCollider->GetPositionY()+110 << "  " <<tCollider->GetPositionY()+25<<"    " <<offset.y<<std::endl;
-                player->CollisionUpdate(offset);
+                 player->CollisionUpdate(offset);
                 // std::cout  << column <<"    "<<row <<std::endl;
                 breakflag=true;
                 break;
