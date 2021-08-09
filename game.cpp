@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Tilemap.h"
 #include "collider.h"
+#include "Level.h"
 
 bool Game::init(const char* title,int xpos, int ypos, int height, int width, bool flags)
 {
@@ -24,6 +25,10 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
             if (pRenderer!=0){
                 SDL_SetRenderDrawColor(pRenderer,0,0,255,255);
                 player = new Player(pRenderer);
+
+                //Level object
+                level = new Level("graphics/lv1.txt", pRenderer, 1);
+
 
             }
             else{
@@ -49,6 +54,8 @@ void Game::render()
     SDL_RenderClear(pRenderer);
     back->render();
     player->render();
+
+    level->render();
     SDL_RenderPresent(pRenderer);
 }
 
@@ -59,6 +66,8 @@ void Game::update()
     else {player->update(playerXpos,NULL);}
     for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=0;}
     tileFlag=false;
+
+    level->update(player->getPosition(), player->getTexture());
 }
 
 void Game::clean()
@@ -89,7 +98,8 @@ void Game::handleEvents(float deltaTime)
 }
 
 void Game::Collider(Player* player,Background* back)
-{   
+{
+    ///*  
     vec player1=player->getPosition();
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
@@ -127,4 +137,5 @@ void Game::Collider(Player* player,Background* back)
             }     
         }
     }
+    //*/
 }

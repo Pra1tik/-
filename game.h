@@ -2,11 +2,11 @@
 #define _Game_
 //#pragma once
 #include <SDL2/SDL.h>
-#include<iostream>
+#include <iostream>
 #include "math.h"
 #include "defaultVar.h"
 #include <vector>
-
+#include "Level.h"
 
 
 class Game{
@@ -20,6 +20,8 @@ class Game{
         void clean();
         bool running(){return runGame;}
         void Collider(class Player*, class Background*);
+        class Player* getPlayer() { return player; }
+        class Level* getLevel() { return level; }
     private:
         SDL_Window* pWindow;
         SDL_Renderer* pRenderer;
@@ -29,6 +31,8 @@ class Game{
         class Background* back;
         class collider* pCollider;
         class collider* tCollider;
+
+        class Level* level;
 
         float dt = 0;
         bool runGame;
