@@ -2,11 +2,11 @@
 #define _Game_
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include<iostream>
+#include <iostream>
 #include "math.h"
 #include "defaultVar.h"
 #include <vector>
-
+#include "Level.h"
 
 
 class Game{
@@ -20,6 +20,8 @@ class Game{
         void clean();
         bool running(){return runGame;}
         void Collider(class Player*, class Background*);
+        class Player* getPlayer() { return player; }
+        class Level* getLevel() { return level; }
     private:
         enum Game_States
         {
@@ -42,6 +44,8 @@ class Game{
         class SelectScreen* selectScreen;
         class InstructionScreen* controls;
         class PauseScreen* paused;
+
+        class Level* level;
 
         float dt = 0;
         bool runGame;

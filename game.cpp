@@ -5,7 +5,8 @@
 #include "StartScreen.h"
 #include "SelectScreen.h"
 #include "InstructionScreen.h"
-#include "PauseState.h"
+#include "PauseScreen.h"
+#include "Level.h"
 
 bool Game::init(const char* title,int xpos, int ypos, int height, int width, bool flags)
 {
@@ -28,6 +29,10 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
             if (pRenderer!=0){
                 SDL_SetRenderDrawColor(pRenderer,0,0,255,255);
                 player = new Player(pRenderer);
+
+                //Level object
+                level = new Level("graphics/lv1.txt", pRenderer, 1);
+
 
             }
             else{
@@ -193,7 +198,8 @@ void Game::handleEvents(float deltaTime)
 }
 
 void Game::Collider(Player* player,Background* back)
-{   
+{
+    ///*  
     vec player1=player->getPosition();
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
@@ -237,4 +243,5 @@ void Game::Collider(Player* player,Background* back)
             break;
         }
     }
+    //*/
 }
