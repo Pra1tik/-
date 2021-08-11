@@ -1,6 +1,5 @@
 #include "game.h"
 #include "Player.h"
-#include "Tilemap.h"
 #include "collider.h"
 #include "StartScreen.h"
 #include "SelectScreen.h"
@@ -48,8 +47,6 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         else{
             return false;
         }
-        back = new Background(pRenderer);
-        back->load();
         pCollider= new collider();
         tCollider= new collider();
         startScreen = new StartScreen(pRenderer);
@@ -72,8 +69,8 @@ void Game::render()
             startScreen->render();
             break;
         case GAME_SCREEN:
-            back->render();
-            player->render();
+            player->render(level->camera);
+            level->render();
             break;
         case SELECT_SCREEN:
             selectScreen->render();
@@ -96,11 +93,8 @@ void Game::update()
     {
         case (GAME_SCREEN):
             player->animate();
-            for(int i(0);i<TotalTilesRow;i++){if (tilesOfCollidedRow[i]>0){tileFlag=true;break;} }
-            if (tileFlag) {player->update(playerXpos,tilesOfCollidedRow);}
-            else {player->update(playerXpos,NULL);}
-            for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=0;}
-            tileFlag=false;
+            player->update();
+            level->update(player->getPosition(),player->getTexture());
             break;
         case (START_SCREEN):
             break;
@@ -193,55 +187,55 @@ void Game::handleEvents(float deltaTime)
 
         }
     }
-    Collider(player,back);
-
+    if (currentGameState == GAME_SCREEN)
+    {
+        Collider(player,level);
+    }
 }
 
-void Game::Collider(Player* player,Background* back)
+void Game::Collider(Player* player,Level* level)
 {
-    ///*  
     vec player1=player->getPosition();
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
-    
-    for (int row {TotalTilesColumn};row>0;row--)
+    int FirstRow = ((player->getPosition().y)/64 - 2) > 0 ? (player->getPosition().y)/64 - 2 : 0;
+    int LastRow = FirstRow >= 14 ? 18 : FirstRow+5;
+    int FirstColumn = (player->getPosition().x)/64 - 2 > 0 ? (player->getPosition().x)/64 - 2 : 0;
+    for (int row = LastRow;row>=FirstRow;row--)
     {
-        for ( int column{0};column<TotalTilesRow;column++)
+        for ( int column = FirstColumn; column<FirstColumn+5; column++)
         {
-            SDL_Rect pTil{back->getPosXTiles(row,column),back->getPosYTiles(row,column)-25,50,50};  // y is subtracted by the half of tilewidth to make player stay on the top of tile
+            SDL_Rect pTil{column  * 64,row * 64 -25,64,64};  // y is subtracted by the half of tilewidth to make player stay on the top of tile
             tCollider->setRect(pTil);
             // std::cout<<back->getPosYTiles(row,column)<<std::endl;
-            if (back->getTileNum(row,column)==1)
+            if (level->mTileMatrix[row][column]>=0)
             {
-            if(pCollider->checkCollision(*tCollider,0.0f))
-            {
-                for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]=(back->getTileNum(row,i));}
-                vec offset=pCollider->getOffset();
-                if (pCollider->GetPositionX()>tCollider->GetPositionX()){offset.x*=-1;}
-                // if (pCollider->GetPositionX()>tCollider->GetPositionX()+50){offset.x/=2;}
-                if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+50){offset.x=0;}
-                if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+50){offset.x=0;}
-                if (pCollider->GetPositionY() >tCollider->GetPositionY())
+                if(pCollider->checkCollision(*tCollider,0.0f))
                 {
-                    offset.y*=-1;
-                    for (int i{0};i<TotalTilesRow;i++){tilesOfCollidedRow[i]= 2;} //while jumping make the tiles as open space
+
+                    // int initTileMember = (FirstColumn-10) > 0 ? FirstColumn-10 : 0;
+                    for (int i=0;i<level->mCol;i++){tilesOfCollidedRow[i]=level->mTileMatrix[row][i];}
+                    vec offset=pCollider->getOffset();
+                    if (pCollider->GetPositionX()>tCollider->GetPositionX()){offset.x*=-1;}
+                    // if (pCollider->GetPositionX()>tCollider->GetPositionX()+50){offset.x/=2;}
+                    if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+64){offset.x=0;}
+                    if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+64){offset.x=0;}
+                    if (pCollider->GetPositionY()>tCollider->GetPositionY())
+                    {
+                        offset.y*=-1;
+                        for (int i{0};i<level->mCol;i++){tilesOfCollidedRow[i]= -1;} //while jumping make the tiles as open space
+                    }
+
+                    player->CollisionUpdate(offset,tilesOfCollidedRow, level->mCol);
+                    breakflag= true;
+                    break;
                 }
-                 player->CollisionUpdate(offset);
-                // std::cout  << column <<"    "<<row <<std::endl;
-                breakflag=true;
-                break;
-            }
-            else
-            {
-                playerXpos=pCollider->GetPositionX();
-            }
             }     
         }
         if (breakflag)
         {
-            breakflag=false;
+            breakflag = false;
             break;
         }
     }
-    //*/
 }

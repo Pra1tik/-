@@ -3,7 +3,7 @@
 SelectScreen::SelectScreen(SDL_Renderer* pRenderer)
 {
     cRenderer = pRenderer;
-    pTTF = TTF_OpenFont("assets/pacifico/Pacifico.ttf",60);
+    pTTF = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",60);
     playText = new TextureWrapper(pRenderer,pTTF);
     exitText = new TextureWrapper(pRenderer,pTTF);
     instructionText = new TextureWrapper(pRenderer,pTTF);

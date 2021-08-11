@@ -1,26 +1,28 @@
 #include "Player.h"
-#include "defaultVar.h"
 
 Player::Player(SDL_Renderer* renderer)
 {
 
     mTexture = new TextureWrapper(renderer);
-
     
-    mTexture->loadFromFile("assets/player_tilesheet.png");
+    mTexture->loadFromFile("graphics/spriteSheet/player_tilesheet.png");
 
     //Set initial position
-    setPosition(100, 400);
-    setVelocity(5, 0);
+    setPosition(100, 300);
+    setVelocity(5, -1);
     setAccleration(0, 0);
 
+    flip =SDL_FLIP_NONE;
+    falling = true;
 
 }
 
-void Player::CollisionUpdate(vec offset,int nextTile, vec tile)
+void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
 {
-
-    // std::cout <<"collidion" <<std::endl;
+    for (int i{0};i<tiles;i++)
+    {
+        tileRowPlayerClass[i]=tileRow[i];
+    }
     if  (abs(offset.y) >= TileHeight)
     {
         offset.y=0;
@@ -31,34 +33,29 @@ void Player::CollisionUpdate(vec offset,int nextTile, vec tile)
     }
     if (abs(offset.x) == mVel.x)
     {
-        mVel.y=0;
-        mPos.y +=offset.y;
+        mVel.y = -30;
         isJumping = false;
         falling = false;
     }
-    else if(offset.x== 0 || abs(offset.x)==mVel.x)
+    else if(offset.x== 0)
     {
         mVel.x =5;
         isJumping=false;
+        falling = false;
         mVel.y = imp;
         mAcc.y = 0;
         mPos.y += (offset.y);
     }
-
-
-    std::cout <<offset.x <<"    " <<offset.y <<std::endl;
+    // std::cout << offset.x << "  " <<offset.y <<std::endl;
     // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
 }
 
 
-void Player::update(int playerXpos,int tileRow[TotalTilesRow])
+void Player::update()
 {
-
-    // for (int i{0};i<TotalTilesRow;i++){std::cout<< tileRowPlayerClass[i]<<"  ";} std::cout<<"\n";
-    if (tileRow!=NULL) {for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=tileRow[i];}}
-    if (tileRowPlayerClass[((playerXpos)/TileWidth)%25]==1 || tileRowPlayerClass[((playerXpos+40)/TileWidth)%25]==1) {falling=false;}
-    else if (tileRowPlayerClass[((playerXpos)/TileWidth)%25]==2)
+    if (tileRowPlayerClass[((mPos.x)/TileWidth)]>-1 || tileRowPlayerClass[((mPos.x+40)/TileWidth)]>-1) {falling=false;}
+    else if (tileRowPlayerClass[(mPos.x)/TileWidth]==-1)
     {
         if(mVel.y>0){mVel.y=fall;}
         falling=true;
@@ -66,7 +63,7 @@ void Player::update(int playerXpos,int tileRow[TotalTilesRow])
 
     if(falling)
     {
-        for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=0;}
+        for (int i{0};i<62;i++){tileRowPlayerClass[i]=-2;}
         mVel.y = (mVel.y - gravity);
         if (mVel.y>0){mPos.y -= mVel.y * dt; }
         else {mPos.y -= 2*mVel.y * dt; }
@@ -74,26 +71,21 @@ void Player::update(int playerXpos,int tileRow[TotalTilesRow])
     if(mAcc.y == 1) 
     {
         falling=false;
-        for (int i{0};i<TotalTilesRow;i++){tileRowPlayerClass[i]=0;}
+        for (int i{0};i<62;i++){tileRowPlayerClass[i]=-2;}
         mVel.y = (mVel.y - gravity);
         if (mVel.y>0){mPos.y -= mVel.y * dt; }
         else {mPos.y -= 2*mVel.y * dt; }
     }
 
-    // if(mPos.y > 600)  //uncomment if want to put a base level
-    // {
-    //     mVel.y = imp;
-    //     mAcc.y = 0;
-    //     mPos.y = 600;
-    //     falling=false;
-    // }
 
     mPos.x += mAcc.x * mVel.x;
 }
 
 
-void Player::render()
+
+void Player::render(SDL_Rect rect)
 {
+    //select frame and flipstate
     if (mAcc.x == 1)
     {
         flip = SDL_FLIP_NONE;
@@ -104,10 +96,11 @@ void Player::render()
     }
     double angle = 0.0;
     SDL_Rect source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
-    SDL_Rect dest = {mPos.x,mPos.y,playerWidth,playerHeight};
+    SDL_Rect dest = {mPos.x-rect.x,mPos.y-rect.y,playerWidth,playerHeight};
     //render the texture
     mTexture->render(source,dest,angle,flip);
 }
+
 
 
 void Player::handleInput(SDL_Event& e, float deltaTime)
@@ -131,12 +124,18 @@ void Player::handleInput(SDL_Event& e, float deltaTime)
     }
 
 
-    if(state[SDL_SCANCODE_SPACE])
+    if(jumpFlag == false && state[SDL_SCANCODE_SPACE])
     {
         mAcc.y = 1;
+        jumpFlag = true;
         isJumping = true;
     }
+    else if(!state[SDL_SCANCODE_SPACE])
+    {
+        jumpFlag = false;
+    }
 }
+
 
 void Player::animate()
 {

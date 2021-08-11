@@ -5,11 +5,11 @@
 InstructionScreen::InstructionScreen(SDL_Renderer* pRenderer)
 {
     cRenderer = pRenderer;
-    TTF_Font* font = TTF_OpenFont("assets/pacifico/Pacifico.ttf",50);
+    TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",50);
     SDL_Color color = {0,0,0};
     Instruction = new TextureWrapper(pRenderer);
     returnText = new TextureWrapper(pRenderer,font);
-    Instruction->loadFromFile("assets/instruction.png");
+    Instruction->loadFromFile("graphics/intro.jpg");
     returnText->loadFromRenderedText("RETURN",color);
     source = {0,0,Instruction->getWidth(),Instruction->getHeight()};
     destination = {0,0,WindowWidth,WindowHeight};

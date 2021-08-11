@@ -8,8 +8,8 @@ class Character
     public:
         Character() {};
 
-        virtual void update(int playereXpos,int tileRow[]) {};
-        virtual void render() {};
+        virtual void update() {};
+        virtual void render(SDL_Rect rect) {};
 
         void setPosition(int x, int y) { mPos.x = x; mPos.y = y; }
         void setVelocity(int x, int y) { mVel.x = x; mVel.y = y; }

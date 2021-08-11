@@ -4,7 +4,7 @@
 PauseScreen::PauseScreen(SDL_Renderer* pRenderer)
 {
     cRenderer = pRenderer;
-    TTF_Font* font=TTF_OpenFont("assets/pacifico/Pacifico.ttf",50);
+    TTF_Font* font=TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",50);
 
     resume = new TextureWrapper(pRenderer,font);
     exit = new TextureWrapper(pRenderer, font);

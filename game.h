@@ -19,9 +19,7 @@ class Game{
         void handleEvents(float deltaTime);
         void clean();
         bool running(){return runGame;}
-        void Collider(class Player*, class Background*);
-        class Player* getPlayer() { return player; }
-        class Level* getLevel() { return level; }
+        void Collider(class Player*, class Level*);
     private:
         enum Game_States
         {
@@ -51,7 +49,7 @@ class Game{
         bool runGame;
         int tileNum;
         vec offset;
-        int tilesOfCollidedRow[WindowWidth/TileWidth];
+        int tilesOfCollidedRow[62];
         bool tileFlag;
         bool breakflag=false;
         int playerXpos;
