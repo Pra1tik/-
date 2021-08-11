@@ -1,7 +1,7 @@
 #ifndef _Game_
 #define _Game_
-//#pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include "math.h"
 #include "defaultVar.h"
@@ -19,10 +19,17 @@ class Game{
         void handleEvents(float deltaTime);
         void clean();
         bool running(){return runGame;}
-        void Collider(class Player*, class Background*);
-        class Player* getPlayer() { return player; }
-        class Level* getLevel() { return level; }
+        void Collider(class Player*, class Level*);
     private:
+        enum Game_States
+        {
+            START_SCREEN=0,
+            SELECT_SCREEN,
+            GAME_SCREEN,
+            INSTRUCTIONS_SCREEN,
+            PAUSE_SCREEN,
+            EXIT_SCREEN
+        };
         SDL_Window* pWindow;
         SDL_Renderer* pRenderer;
 
@@ -31,6 +38,10 @@ class Game{
         class Background* back;
         class collider* pCollider;
         class collider* tCollider;
+        class StartScreen* startScreen;
+        class SelectScreen* selectScreen;
+        class InstructionScreen* controls;
+        class PauseScreen* paused;
 
         class Level* level;
 
@@ -38,9 +49,12 @@ class Game{
         bool runGame;
         int tileNum;
         vec offset;
-        int tilesOfCollidedRow[WindowWidth/TileWidth];
+        int tilesOfCollidedRow[62];
         bool tileFlag;
+        bool breakflag=false;
         int playerXpos;
+        Game_States currentGameState;
+        vec mousePos;
 };
 
 

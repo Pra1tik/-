@@ -29,6 +29,9 @@ class TextureWrapper
         //Renders texture at any given point
         void render(int x, int y, SDL_Rect* clip = NULL, int scale = 1, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
+        //Renders with source and destination rect
+        void render(SDL_Rect src, SDL_Rect dest, double angle=0.0, SDL_RendererFlip flip=SDL_FLIP_NONE);
+
         //Gets image dimension
         int getWidth();
         int getHeight();
