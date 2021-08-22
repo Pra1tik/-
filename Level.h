@@ -5,6 +5,9 @@
 #include "game.h"
 #include <cstdio>
 
+float random_float(const float min, const float max);
+
+
 class Level
 {
     public:
@@ -18,6 +21,7 @@ class Level
         TextureWrapper* mTexture;
         SDL_Renderer* mRenderer;
         SDL_Rect camera;
+        bool shake = false;
         //class Game* mGame = NULL;
     public:
         Level(const char filename[], SDL_Renderer* renderer, int levelNum);

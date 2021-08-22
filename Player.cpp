@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SDL2/SDL_ttf.h"
 
 Player::Player(SDL_Renderer* renderer)
 {
@@ -6,6 +7,14 @@ Player::Player(SDL_Renderer* renderer)
     mTexture = new TextureWrapper(renderer);
     
     mTexture->loadFromFile("graphics/spriteSheet/player_tilesheet.png");
+
+    TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",40);
+
+    SDL_Color color = {0,0,0,255};
+
+    life = new TextureWrapper(renderer, font);
+
+    life->loadFromRenderedText("LIVES  :  3",color);
 
     //Set initial position
     setPosition(500, 100);
@@ -57,7 +66,7 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
         mAcc.y = 0;
         mPos.y += offset.y;
     }
-    std::cout << offset.x << "  " <<offset.y <<std::endl;
+    // std::cout << offset.x << "  " <<offset.y <<std::endl;
     // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
     previousOffset = {offset.x , offset.y};
@@ -66,7 +75,18 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
 
 void Player::update()
 {
-    if (tileRowPlayerClass[((mPos.x)/TileWidth)]>-1 || tileRowPlayerClass[((mPos.x+60)/TileWidth)]>-1) {falling=false;}
+    if (tileRowPlayerClass[((mPos.x)/TileWidth)]>-1 || tileRowPlayerClass[((mPos.x+60)/TileWidth)]>-1) 
+    {
+        if (tileRowPlayerClass[((mPos.x)/TileWidth)] == 3 || tileRowPlayerClass[((mPos.x+60)/TileWidth)] == 3)
+        {
+            shake = true;
+        }
+        else 
+        {
+            shake = false;
+        }
+        falling=false;
+    }
     else if (tileRowPlayerClass[(mPos.x)/TileWidth]==-1)
     {
         if(mVel.y>0){mVel.y=fall;}
@@ -82,6 +102,7 @@ void Player::update()
     }
     if(mAcc.y == 1) 
     {
+        shake = false;
         falling=false;
         for (int i{0};i<pTiles;i++){tileRowPlayerClass[i]=-2;}
         mVel.y = (mVel.y - gravity);
@@ -97,6 +118,12 @@ void Player::update()
 
 void Player::render(SDL_Rect rect)
 {
+    // std::cout << rect.x <<  "   " <<rect.y <<std::endl;
+    //Lives render
+    SDL_Rect source = { 0, 0, life->getWidth(), life->getHeight()};
+    SDL_Rect dest = { rect.x + WindowWidth - life->getWidth(), rect.y , life->getWidth(), life->getHeight()};
+    
+
     //select frame and flipstate
     if (mAcc.x == 1)
     {
@@ -107,10 +134,11 @@ void Player::render(SDL_Rect rect)
         flip = SDL_FLIP_HORIZONTAL;
     }
     double angle = 0.0;
-    SDL_Rect source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
-    SDL_Rect dest = {mPos.x-rect.x,mPos.y-rect.y,playerWidth,playerHeight};
+    source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
+    dest = {mPos.x-rect.x,mPos.y-rect.y,playerWidth,playerHeight};
     //render the texture
     mTexture->render(source,dest,angle,flip);
+    life->render(rect.x,rect.y);
 }
 
 
@@ -185,15 +213,15 @@ void Player::animate()
         currentFrame.x = 2;
         currentFrame.y = 0;
     }
-    else if (isShooting)
-    {
-        currentFrame.x = 2;
-        currentFrame.y = 1;
-    }
     else if (mAcc.x == 0 && mAcc.y == 0)
     {
         currentFrame.x = 0;
         currentFrame.y = 0;
+    }
+    if (isShooting)
+    {
+        currentFrame.x = 2;
+        currentFrame.y = 1;
     }
 
 }

@@ -1,9 +1,11 @@
 #include "game.h"
+#include <time.h>
 
 Game* pGame = NULL;
 
 int main(int argc,char* argv[])
 {
+    srand(time(NULL));
     const float FPS=60.f;
     Uint32 currentTime, lastTime = 0;
     const float frameDelay=1000/FPS;

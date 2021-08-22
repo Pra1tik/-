@@ -15,6 +15,7 @@ class Player : public Character
         void animate();
 
         bool leftFacing = false, rightFacing = true;
+        bool shake = false;
 
     private:
         int mlives = 3;
@@ -33,4 +34,5 @@ class Player : public Character
         vec currentFrame{0,0};
         SDL_RendererFlip flip;
         int pTiles;
+        TextureWrapper* life;
 };

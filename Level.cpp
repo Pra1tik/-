@@ -1,6 +1,15 @@
 #include "Level.h"
 #include "defaultVar.h"
 
+float random_float(const float min, const float max)
+{
+    if (max == min) return min;
+    else if (min < max) return (max - min) * ((float)rand() / RAND_MAX) + min;
+
+    // return 0 if min > max
+    return 0;
+}
+
 Level::Level(const char fileName[], SDL_Renderer* renderer, int levelNum)
 {
     mRenderer = renderer;
@@ -108,6 +117,18 @@ void Level::update(vec pPos, TextureWrapper* pTexture)
 
     camera.x += ((playerPos.x + playerTexture.x / 2) - camera.x) * 0.1 - 80;
     camera.y = (playerPos.y + playerTexture.y / 2) - WindowHeight / 2;
+    
+    //Shake
+    if(shake)
+    {
+        float maxOffset = 10.f, shake = 2.f;
+
+        float offSetX = maxOffset * shake * random_float(-1.f, 1.f);
+        float offSetY = maxOffset * shake * random_float(-1.f, 1.f);
+
+        camera.x += offSetX;
+        camera.y += offSetY;
+    }
 
     //Check boundary
     if(camera.x > mLWidth - camera.w)
