@@ -63,10 +63,10 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 
         //For enemy
         enemies = new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640});
-        enemy1 = new Enemy[10];
+       
 
         //Initialize enemy
-
+        enemy1.push_back(new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640}));
 
         //For bullet
         playerBullet = new bullet;

@@ -8,6 +8,8 @@
 #include <vector>
 #include "Level.h"
 #include "Enemy.h"
+#include <vector>
+
 
 class Game{
     public:
@@ -81,8 +83,8 @@ class Game{
         bullet* playerBullet;
         bullet* enemyBullet;
         Enemy* enemies;
-        Enemy* enemy1;
-        Enemy* enemy2;
+        std::vector<Enemy*> enemy1;
+        std::vector<Enemy*> enemy2;
 
         TextureWrapper* bulletTexture;
 
