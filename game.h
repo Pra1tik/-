@@ -81,6 +81,9 @@ class Game{
         bullet* playerBullet;
         bullet* enemyBullet;
         Enemy* enemies;
+        Enemy* enemy1;
+        Enemy* enemy2;
+
         TextureWrapper* bulletTexture;
 
         bool enemyDead = false;

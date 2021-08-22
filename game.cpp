@@ -62,7 +62,11 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         currentGameState = START_SCREEN;
 
         //For enemy
-        enemies = new Enemy(pRenderer);
+        enemies = new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640});
+        enemy1 = new Enemy[10];
+
+        //Initialize enemy
+
 
         //For bullet
         playerBullet = new bullet;
@@ -98,6 +102,8 @@ void Game::render()
             {
                 bulletTexture->render(playerBullet->bulletPos.x - currentLevel->camera.x, playerBullet->bulletPos.y - currentLevel->camera.y);
             }
+
+            
 
             if(killCount >= TOTAL_ENEMIES)
             {
@@ -157,7 +163,13 @@ void Game::update()
             {
                 currentLevel->shake = false;
             }
-            enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+            
+            int enemyUpdateValue;
+            enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+            if(enemyUpdateValue == 2)
+            {
+                playerBullet->bulletAlive = false;
+            }
 
             //For bullet
             if(playerBullet->bulletAlive)
@@ -165,7 +177,7 @@ void Game::update()
                 playerBullet->bulletPos = {playerBullet->bulletPos.x+playerBullet->bulletVel.x, playerBullet->bulletPos.y};
                 //mBulletTexture.render(pBullet.bulletPos.x - camera.x, pBullet.bulletPos.y - camera.y);
 
-                if(enemies->dead || playerBullet->bulletPos.x > currentLevel->camera.x + WindowWidth)
+                if(playerBullet->bulletPos.x > currentLevel->camera.x + WindowWidth)
                 {
                     playerBullet->bulletAlive = false;
                 } 
@@ -307,7 +319,7 @@ void Game::handleEvents(float deltaTime)
                 playerBullet->bulletPos = bulletSpawnPos;
                 playerBullet->bulletVel.x = (player->leftFacing ? -12 : 12);
             }
-            else if(!state[SDL_SCANCODE_LCTRL])
+            else if(!state[SDL_SCANCODE_LSHIFT])
             {
                 playerBullet->shootFlag = false;
             }

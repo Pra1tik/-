@@ -1,11 +1,13 @@
 #include "Enemy.h"
 #include "defaultVar.h"
 
-Enemy::Enemy(SDL_Renderer* renderer)
+Enemy::Enemy(SDL_Renderer* renderer, vec pos, vec range)
 {
-    ePos = {64, 1536 - 52};
+    //ePos = {64, 1536 - 52};
+    //xRange = {64, 640};
+    ePos = pos;
+    xRange = range;
     eVel = {2, 0};
-    xRange = {64, 640};
 
     eTexture = new TextureWrapper(renderer);
     e2Texture = new TextureWrapper(renderer);
@@ -21,8 +23,27 @@ Enemy::Enemy(SDL_Renderer* renderer)
     stopRendering = false;
 }
 
+void Enemy::init(SDL_Renderer* renderer, vec pos, vec range)
+{
+    ePos = pos;
+    xRange = range;
+    eVel = {2, 0};
 
-int Enemy::update(vec pPos, SDL_Rect Bullet)
+    eTexture = new TextureWrapper(renderer);
+    e2Texture = new TextureWrapper(renderer);
+    //eTexture->loadFromFile("graphics/char.png");
+    if(!eTexture->loadFromFile("graphics/spriteSheet/zombie2.png"))
+    {
+        std::cout << "Failed to load enemy.\n";
+    }
+    e2Texture->loadFromFile("graphics/spriteSheet/zombie_die.png");
+
+    dead = false;
+
+    stopRendering = false;
+}
+
+int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
 {
     if(!dead)
     {
@@ -50,6 +71,7 @@ int Enemy::update(vec pPos, SDL_Rect Bullet)
             Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
         {
             dead = true;
+            return 2;
         }
     }
 
