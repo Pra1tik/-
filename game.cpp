@@ -35,8 +35,9 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 }
 
                 //Level object
-                level = new Level("graphics/level1.txt", pRenderer, 1);
-
+                level1 = new Level("graphics/level1.txt", pRenderer, 1);
+                level2 = new Level("graphics/lv1.txt", pRenderer, 1);
+                currentLevel = level1;
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
@@ -79,17 +80,34 @@ void Game::render()
             startScreen->render();
             break;
         case GAME_SCREEN:
-            level->render();
-            player->render(level->camera);
+            currentLevel->render();
+            player->render(currentLevel->camera);
             // if (!enemyDead)
             // {
             //     enemies->render(level->camera);
             // }
-            enemies->render(level->camera);
+            enemies->render(currentLevel->camera);
 
             if(playerBullet->bulletAlive)
             {
-                bulletTexture->render(playerBullet->bulletPos.x - level->camera.x, playerBullet->bulletPos.y - level->camera.y);
+                bulletTexture->render(playerBullet->bulletPos.x - currentLevel->camera.x, playerBullet->bulletPos.y - currentLevel->camera.y);
+            }
+
+            if(killCount >= TOTAL_ENEMIES)
+            {
+                if(levelNum == 1)
+                {
+                    levelNum = 2;
+                    currentLevel = level2;
+                    killCount = 0;
+
+                    player->setPosition(500, 100);
+                }
+                else if(levelNum == 2)
+                {
+                    //Game over
+                    killCount = 0;
+                }
             }
 
             break;
@@ -116,7 +134,7 @@ void Game::update()
         case (GAME_SCREEN):
             player->animate();
             player->update();
-            level->update(player->getPosition(),player->getTexture());
+            currentLevel->update(player->getPosition(),player->getTexture());
             // if (!enemyDead)
             // {
             //     enemies->update(player->getPosition());
@@ -127,11 +145,11 @@ void Game::update()
             // }
             if (player->shake)
             {
-                level->shake = true;
+                currentLevel->shake = true;
             }
             else
             {
-                level->shake = false;
+                currentLevel->shake = false;
             }
             enemies->update(player->getPosition());
 
@@ -141,25 +159,25 @@ void Game::update()
                 playerBullet->bulletPos = {playerBullet->bulletPos.x+playerBullet->bulletVel.x, playerBullet->bulletPos.y};
                 //mBulletTexture.render(pBullet.bulletPos.x - camera.x, pBullet.bulletPos.y - camera.y);
 
-                if(playerBullet->bulletPos.x > level->camera.x + WindowWidth)
+                if(playerBullet->bulletPos.x > currentLevel->camera.x + WindowWidth)
                 {
                     playerBullet->bulletAlive = false;
                 } 
                 else
                 {
-                    int bulletX = playerBullet->bulletPos.x / (level->tileWidth * level->scale);
-                    int bulletY = playerBullet->bulletPos.y / (level->tileHeight * level->scale);
+                    int bulletX = playerBullet->bulletPos.x / (currentLevel->tileWidth * currentLevel->scale);
+                    int bulletY = playerBullet->bulletPos.y / (currentLevel->tileHeight * currentLevel->scale);
                     SDL_Rect bulletRect = {playerBullet->bulletPos.x, playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()};
                     
                     for(int i = 0; i < 1; i++)
                     {
                         for(int j = 0; j < 2; j++)
                         {
-                            if(bulletY+i < level->mRow && bulletX+j < level->mCol)
+                            if(bulletY+i < currentLevel->mRow && bulletX+j < currentLevel->mCol)
                             {
-                                if(level->mTileMatrix[bulletY+i][bulletX+j] != -1)
+                                if(currentLevel->mTileMatrix[bulletY+i][bulletX+j] != -1)
                                 {
-                                    SDL_Rect tile = {(bulletX+i)*level->tileWidth*level->scale, (bulletY+j)*level->tileHeight*level->scale, level->tileWidth*level->scale, level->tileHeight*level->scale};
+                                    SDL_Rect tile = {(bulletX+i)*currentLevel->tileWidth*currentLevel->scale, (bulletY+j)*currentLevel->tileHeight*currentLevel->scale, currentLevel->tileWidth*currentLevel->scale, currentLevel->tileHeight*currentLevel->scale};
 
                                     if(bulletRect.x < (tile.x + tile.w) && (bulletRect.x + bulletRect.w) > tile.x &&
                                             bulletRect.y < (tile.y + tile.h) && (bulletRect.y + bulletRect.h) > tile.y )
@@ -288,11 +306,16 @@ void Game::handleEvents(float deltaTime)
             {
                 playerBullet->shootFlag = false;
             }
+            if(state[SDL_SCANCODE_N])
+            {
+                killCount++;
+            }
+            
         }
     }
     if (currentGameState == GAME_SCREEN)
     {
-        Collider(player,level);
+        Collider(player,currentLevel);
 
     }
 }

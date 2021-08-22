@@ -58,7 +58,12 @@ class Game{
         class InstructionScreen* controls;
         class PauseScreen* paused;
 
-        class Level* level;
+        class Level* currentLevel;
+        class Level* level1;
+        class Level* level2;
+        int killCount = 0;
+        const int TOTAL_ENEMIES = 1;
+        int levelNum = 1;
 
         float dt = 0;
         bool runGame;
