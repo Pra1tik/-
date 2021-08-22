@@ -30,7 +30,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 player = new Player(pRenderer);
 
                 //Level object
-                level = new Level("graphics/newlvl1.txt", pRenderer, 1);
+                level = new Level("graphics/level1.txt", pRenderer, 1);
 
 
             }
@@ -71,6 +71,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 }
 void Game::render()
 {
+    enemyDead = enemies->dead;
     SDL_RenderClear(pRenderer);
     switch (currentGameState)
     {
@@ -80,6 +81,10 @@ void Game::render()
         case GAME_SCREEN:
             level->render();
             player->render(level->camera);
+            // if (!enemyDead)
+            // {
+            //     enemies->render(level->camera);
+            // }
             enemies->render(level->camera);
 
             if(playerBullet->bulletAlive)
@@ -105,12 +110,29 @@ void Game::render()
 
 void Game::update()
 {
+    enemyDead = enemies->dead;
     switch (currentGameState)
     {
         case (GAME_SCREEN):
             player->animate();
             player->update();
             level->update(player->getPosition(),player->getTexture());
+            // if (!enemyDead)
+            // {
+            //     enemies->update(player->getPosition());
+            // }
+            // else
+            // {
+            //     enemies->~Enemy();
+            // }
+            if (player->shake)
+            {
+                level->shake = true;
+            }
+            else
+            {
+                level->shake = false;
+            }
             enemies->update(player->getPosition());
 
             //For bullet
@@ -244,14 +266,23 @@ void Game::handleEvents(float deltaTime)
             //For shooting
             const Uint8* state = SDL_GetKeyboardState(NULL);
             
-            if(state[SDL_SCANCODE_LCTRL] && !playerBullet->shootFlag && !playerBullet->bulletAlive)
+            if(state[SDL_SCANCODE_LSHIFT] && !playerBullet->shootFlag && !playerBullet->bulletAlive)
             {
                 playerBullet->bulletAlive = true;
                 playerBullet->shootFlag = true;
 
-                vec bulletSpawnPos = player->getPosition();
+                vec bulletSpawnPos;
+
+                if (player->rightFacing)
+                {
+                    bulletSpawnPos = {player->getPosition().x +playerWidth , player->getPosition().y + 55};
+                }
+                else
+                {
+                    bulletSpawnPos = {player->getPosition().x , player->getPosition().y + 55};
+                }
                 playerBullet->bulletPos = bulletSpawnPos;
-                playerBullet->bulletVel.x *= (player->leftFacing ? -1 : 1);
+                playerBullet->bulletVel.x = (player->leftFacing ? -12 : 12);
             }
             else if(!state[SDL_SCANCODE_LCTRL])
             {
@@ -263,7 +294,6 @@ void Game::handleEvents(float deltaTime)
     {
         Collider(player,level);
 
-        
     }
 }
 
@@ -300,7 +330,6 @@ void Game::Collider(Player* player,Level* level)
                         offset.y*=-1;
                         for (int i{0};i<level->mCol;i++){tilesOfCollidedRow[i]= -1;} //while jumping make the tiles as open space
                     }
-
                     player->CollisionUpdate(offset,tilesOfCollidedRow, level->mCol);
                     breakflag= true;
                     break;

@@ -77,6 +77,8 @@ class Game{
         bullet* enemyBullet;
         Enemy* enemies;
         TextureWrapper* bulletTexture;
+
+        bool enemyDead = false;
 };
 
 
