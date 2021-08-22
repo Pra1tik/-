@@ -14,6 +14,8 @@ class Player : public Character
         void CollisionUpdate (vec offset,int tileRow[], int tiles);
         void animate();
 
+        bool leftFacing = false, rightFacing = true;
+
     private:
         int mlives = 3;
         float dt = 0;

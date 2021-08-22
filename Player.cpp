@@ -124,10 +124,14 @@ void Player::handleInput(SDL_Event& e, float deltaTime)
     if(state[SDL_SCANCODE_RIGHT])
     {
         mAcc.x = 1;
+        rightFacing = true;
+        leftFacing = false;
     }
     else if(state[SDL_SCANCODE_LEFT])
     {
         mAcc.x = -1;
+        rightFacing = false;
+        leftFacing = true;
     }
     else if(!state[SDL_SCANCODE_LEFT] && !state[SDL_SCANCODE_RIGHT])
     {

@@ -7,7 +7,7 @@
 #include "defaultVar.h"
 #include <vector>
 #include "Level.h"
-
+#include "Enemy.h"
 
 class Game{
     public:
@@ -20,6 +20,21 @@ class Game{
         void clean();
         bool running(){return runGame;}
         void Collider(class Player*, class Level*);
+
+        struct enemyCoordinates
+        {
+            int levelNum;
+            vec pos;
+            vec range;
+        };
+
+        struct bullet
+        {
+            vec bulletPos;
+            vec bulletVel = {10, 2};
+            bool shootFlag = false;
+            bool bulletAlive = false;
+        };
     private:
         enum Game_States
         {
@@ -55,6 +70,13 @@ class Game{
         int playerXpos;
         Game_States currentGameState;
         vec mousePos;
+
+        //
+        enemyCoordinates* enemyLocation;
+        bullet* playerBullet;
+        bullet* enemyBullet;
+        Enemy* enemies;
+        TextureWrapper* bulletTexture;
 };
 
 

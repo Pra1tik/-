@@ -55,6 +55,15 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         paused = new PauseScreen(pRenderer);
         runGame= true;
         currentGameState = START_SCREEN;
+
+        //For enemy
+        enemies = new Enemy(pRenderer);
+
+        //For bullet
+        playerBullet = new bullet;
+        bulletTexture = new TextureWrapper(pRenderer);
+        bulletTexture->loadFromFile("graphics/newBullet.png");
+
         return true;
     }
 
@@ -69,8 +78,15 @@ void Game::render()
             startScreen->render();
             break;
         case GAME_SCREEN:
-            player->render(level->camera);
             level->render();
+            player->render(level->camera);
+            enemies->render(level->camera);
+
+            if(playerBullet->bulletAlive)
+            {
+                bulletTexture->render(playerBullet->bulletPos.x - level->camera.x, playerBullet->bulletPos.y - level->camera.y);
+            }
+
             break;
         case SELECT_SCREEN:
             selectScreen->render();
@@ -95,6 +111,46 @@ void Game::update()
             player->animate();
             player->update();
             level->update(player->getPosition(),player->getTexture());
+            enemies->update(player->getPosition());
+
+            //For bullet
+            if(playerBullet->bulletAlive)
+            {
+                playerBullet->bulletPos = {playerBullet->bulletPos.x+playerBullet->bulletVel.x, playerBullet->bulletPos.y};
+                //mBulletTexture.render(pBullet.bulletPos.x - camera.x, pBullet.bulletPos.y - camera.y);
+
+                if(playerBullet->bulletPos.x > level->camera.x + WindowWidth)
+                {
+                    playerBullet->bulletAlive = false;
+                } 
+                else
+                {
+                    int bulletX = playerBullet->bulletPos.x / (level->tileWidth * level->scale);
+                    int bulletY = playerBullet->bulletPos.y / (level->tileHeight * level->scale);
+                    SDL_Rect bulletRect = {playerBullet->bulletPos.x, playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()};
+                    
+                    for(int i = 0; i < 1; i++)
+                    {
+                        for(int j = 0; j < 2; j++)
+                        {
+                            if(bulletY+i < level->mRow && bulletX+j < level->mCol)
+                            {
+                                if(level->mTileMatrix[bulletY+i][bulletX+j] != -1)
+                                {
+                                    SDL_Rect tile = {(bulletX+i)*level->tileWidth*level->scale, (bulletY+j)*level->tileHeight*level->scale, level->tileWidth*level->scale, level->tileHeight*level->scale};
+
+                                    if(bulletRect.x < (tile.x + tile.w) && (bulletRect.x + bulletRect.w) > tile.x &&
+                                            bulletRect.y < (tile.y + tile.h) && (bulletRect.y + bulletRect.h) > tile.y )
+                                    {
+                                        playerBullet->bulletAlive = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             break;
         case (START_SCREEN):
             break;
@@ -184,12 +240,30 @@ void Game::handleEvents(float deltaTime)
         {
 
             player->handleInput(event, dt);
+            
+            //For shooting
+            const Uint8* state = SDL_GetKeyboardState(NULL);
+            
+            if(state[SDL_SCANCODE_LCTRL] && !playerBullet->shootFlag && !playerBullet->bulletAlive)
+            {
+                playerBullet->bulletAlive = true;
+                playerBullet->shootFlag = true;
 
+                vec bulletSpawnPos = player->getPosition();
+                playerBullet->bulletPos = bulletSpawnPos;
+                playerBullet->bulletVel.x *= (player->leftFacing ? -1 : 1);
+            }
+            else if(!state[SDL_SCANCODE_LCTRL])
+            {
+                playerBullet->shootFlag = false;
+            }
         }
     }
     if (currentGameState == GAME_SCREEN)
     {
         Collider(player,level);
+
+        
     }
 }
 
