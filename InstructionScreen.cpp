@@ -9,11 +9,11 @@ InstructionScreen::InstructionScreen(SDL_Renderer* pRenderer)
     SDL_Color color = {0,0,0};
     Instruction = new TextureWrapper(pRenderer);
     returnText = new TextureWrapper(pRenderer,font);
-    Instruction->loadFromFile("graphics/intro.jpg");
+    Instruction->loadFromFile("graphics/controls.png");
     returnText->loadFromRenderedText("RETURN",color);
     source = {0,0,Instruction->getWidth(),Instruction->getHeight()};
     destination = {0,0,WindowWidth,WindowHeight};
-    text = {WindowWidth/2-returnText->getWidth()/2,WindowHeight-returnText->getHeight()-50,returnText->getWidth(),returnText->getHeight()};
+    text = {returnText->getWidth()/4,WindowHeight-returnText->getHeight()-50,returnText->getWidth(),returnText->getHeight()};
 }
 
 void InstructionScreen::render()

@@ -5,11 +5,9 @@
 class Enemy
 {
     public:
-        Enemy(){}
         Enemy(SDL_Renderer* renderer, vec pos, vec range);
         ~Enemy();
 
-        void init(SDL_Renderer* renderer, vec pos, vec range);
         int update(vec pPos, SDL_Rect Bullet);
         void render(SDL_Rect camera);
 

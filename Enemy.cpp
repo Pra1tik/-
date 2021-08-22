@@ -23,25 +23,6 @@ Enemy::Enemy(SDL_Renderer* renderer, vec pos, vec range)
     stopRendering = false;
 }
 
-void Enemy::init(SDL_Renderer* renderer, vec pos, vec range)
-{
-    ePos = pos;
-    xRange = range;
-    eVel = {2, 0};
-
-    eTexture = new TextureWrapper(renderer);
-    e2Texture = new TextureWrapper(renderer);
-    //eTexture->loadFromFile("graphics/char.png");
-    if(!eTexture->loadFromFile("graphics/spriteSheet/zombie2.png"))
-    {
-        std::cout << "Failed to load enemy.\n";
-    }
-    e2Texture->loadFromFile("graphics/spriteSheet/zombie_die.png");
-
-    dead = false;
-
-    stopRendering = false;
-}
 
 int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
 {

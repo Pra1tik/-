@@ -66,7 +66,15 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
        
 
         //Initialize enemy
-        enemy1.push_back(new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640}));
+        enemy1.push_back(new Enemy(pRenderer, vec{456, 400}, vec{456, 886}));
+        enemy1.push_back(new Enemy(pRenderer, vec{1413, 208}, vec{1413, 1568}));
+        enemy1.push_back(new Enemy(pRenderer, vec{1429, 784}, vec{1429, 1694}));
+        enemy1.push_back(new Enemy(pRenderer, vec{1879, 1552}, vec{1879, 2579}));
+        enemy1.push_back(new Enemy(pRenderer, vec{1868, 400}, vec{1868, 2088}));
+        enemy1.push_back(new Enemy(pRenderer, vec{72, 1488}, vec{72, 976}));
+        enemy1.push_back(new Enemy(pRenderer, vec{402, 1168}, vec{402, 542}));
+        enemy1.push_back(new Enemy(pRenderer, vec{1417, 1232}, vec{1417, 1737}));
+
 
         //For bullet
         playerBullet = new bullet;
@@ -97,6 +105,10 @@ void Game::render()
             //     enemies->render(level->camera);
             // }
             enemies->render(currentLevel->camera);
+            for(auto it = enemy1.begin(); it != enemy1.end(); it++)
+            {
+                (*it)->render(currentLevel->camera);
+            }
 
             if(playerBullet->bulletAlive)
             {
@@ -166,6 +178,10 @@ void Game::update()
             
             int enemyUpdateValue;
             enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+            for(auto it = enemy1.begin(); it != enemy1.end(); it++)
+            {
+                (*it)->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+            }
             if(enemyUpdateValue == 2)
             {
                 playerBullet->bulletAlive = false;
