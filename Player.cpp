@@ -8,14 +8,7 @@ Player::Player(SDL_Renderer* renderer)
     
     mTexture->loadFromFile("graphics/spriteSheet/player_tilesheet.png");
 
-    TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",40);
-
-    SDL_Color color = {0,0,0,255};
-
-    life = new TextureWrapper(renderer, font);
-
-    life->loadFromRenderedText("LIVES  :  3",color);
-
+    
     //Set initial position
     setPosition(500, 100);
     setVelocity(5, -1);
@@ -120,10 +113,8 @@ void Player::render(SDL_Rect rect)
 {
     // std::cout << rect.x <<  "   " <<rect.y <<std::endl;
     //Lives render
-    SDL_Rect source = { 0, 0, life->getWidth(), life->getHeight()};
-    SDL_Rect dest = { rect.x + WindowWidth - life->getWidth(), rect.y , life->getWidth(), life->getHeight()};
-    
-
+   
+   
     //select frame and flipstate
     if (mAcc.x == 1)
     {
@@ -134,11 +125,10 @@ void Player::render(SDL_Rect rect)
         flip = SDL_FLIP_HORIZONTAL;
     }
     double angle = 0.0;
-    source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
-    dest = {mPos.x-rect.x,mPos.y-rect.y,playerWidth,playerHeight};
+    SDL_Rect source = {currentFrame.x * playerWidth, currentFrame.y *playerHeight,playerWidth,playerHeight};
+    SDL_Rect dest = {mPos.x-rect.x,mPos.y-rect.y,playerWidth,playerHeight};
     //render the texture
     mTexture->render(source,dest,angle,flip);
-    life->render(rect.x,rect.y);
 }
 
 

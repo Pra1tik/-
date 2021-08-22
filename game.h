@@ -84,6 +84,10 @@ class Game{
         TextureWrapper* bulletTexture;
 
         bool enemyDead = false;
+
+        //For health bar
+        TextureWrapper* healthTexture;
+        SDL_Color color = {0,0,0,255};
 };
 
 

@@ -38,6 +38,10 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 level1 = new Level("graphics/level1.txt", pRenderer, 1);
                 level2 = new Level("graphics/lv1.txt", pRenderer, 1);
                 currentLevel = level1;
+
+                //Initialize font
+                TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",40);
+                healthTexture = new TextureWrapper(pRenderer, font);
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
@@ -81,6 +85,8 @@ void Game::render()
             break;
         case GAME_SCREEN:
             currentLevel->render();
+            healthTexture->loadFromRenderedText("LIVES  :  3",color);
+            healthTexture->render(10, 10);
             player->render(currentLevel->camera);
             // if (!enemyDead)
             // {
