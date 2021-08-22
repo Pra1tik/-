@@ -7,7 +7,7 @@ class Enemy
     public:
         Enemy(SDL_Renderer* renderer);
         ~Enemy();
-        int update(vec pPos);
+        int update(vec pPos, SDL_Rect Bullet);
         void render(SDL_Rect camera);
 
 
@@ -17,7 +17,9 @@ class Enemy
         TextureWrapper* e2Texture;
         bool dead;
         int nextShot = 0;
-        bool die = false;  
+        bool die = false;
+    private:
+        bool stopRendering;  
 };
 
 

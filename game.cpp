@@ -151,7 +151,7 @@ void Game::update()
             {
                 currentLevel->shake = false;
             }
-            enemies->update(player->getPosition());
+            enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
 
             //For bullet
             if(playerBullet->bulletAlive)
@@ -159,7 +159,7 @@ void Game::update()
                 playerBullet->bulletPos = {playerBullet->bulletPos.x+playerBullet->bulletVel.x, playerBullet->bulletPos.y};
                 //mBulletTexture.render(pBullet.bulletPos.x - camera.x, pBullet.bulletPos.y - camera.y);
 
-                if(playerBullet->bulletPos.x > currentLevel->camera.x + WindowWidth)
+                if(enemies->dead || playerBullet->bulletPos.x > currentLevel->camera.x + WindowWidth)
                 {
                     playerBullet->bulletAlive = false;
                 } 
@@ -180,7 +180,7 @@ void Game::update()
                                     SDL_Rect tile = {(bulletX+i)*currentLevel->tileWidth*currentLevel->scale, (bulletY+j)*currentLevel->tileHeight*currentLevel->scale, currentLevel->tileWidth*currentLevel->scale, currentLevel->tileHeight*currentLevel->scale};
 
                                     if(bulletRect.x < (tile.x + tile.w) && (bulletRect.x + bulletRect.w) > tile.x &&
-                                            bulletRect.y < (tile.y + tile.h) && (bulletRect.y + bulletRect.h) > tile.y )
+                                            bulletRect.y < (tile.y + tile.h) && (bulletRect.y + bulletRect.h) > tile.y)
                                     {
                                         playerBullet->bulletAlive = false;
                                     }
@@ -189,8 +189,7 @@ void Game::update()
                         }
                     }
                 }
-            }
-
+            }           
             break;
         case (START_SCREEN):
             break;

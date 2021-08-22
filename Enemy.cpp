@@ -17,10 +17,12 @@ Enemy::Enemy(SDL_Renderer* renderer)
     e2Texture->loadFromFile("graphics/spriteSheet/zombie_die.png");
 
     dead = false;
+
+    stopRendering = false;
 }
 
 
-int Enemy::update(vec pPos)
+int Enemy::update(vec pPos, SDL_Rect Bullet)
 {
     if(!dead)
     {
@@ -44,7 +46,8 @@ int Enemy::update(vec pPos)
                 return 1;
             }
         }
-        else
+        if (Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
+            Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
         {
             dead = true;
         }
@@ -59,12 +62,17 @@ void Enemy::render(SDL_Rect camera)
     int num = (int) ((SDL_GetTicks()/100)%6);
     SDL_Rect src = {num* eTexture->getWidth()/6 + 4, 0 , eTexture->getWidth()/6, eTexture->getHeight()};
     SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/6 , eTexture->getHeight()};
-    if (dead)
+    if (dead && !stopRendering)
     {
+        int time = SDL_GetTicks()/1000;
         int num = (int) ((SDL_GetTicks()/100)%3);
         SDL_Rect src = {num* e2Texture->getWidth()/3 , 0 , e2Texture->getWidth()/3, e2Texture->getHeight()};
         SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , e2Texture->getWidth()/3 , e2Texture->getHeight()};
         e2Texture->render(src,dest);
+        if (time > 7)
+        {
+            stopRendering = true;
+        }
     }
     else if(!dead)
     {
