@@ -27,26 +27,26 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
             pRenderer=SDL_CreateRenderer(pWindow,-1,0);
             if (pRenderer!=0){
                 SDL_SetRenderDrawColor(pRenderer,0,0,255,255);
-                player = new Player(pRenderer);
+
+                if (TTF_Init() == -1)
+                {
+                    std::cout << "Error initializing ttf" << TTF_GetError() << std::endl;
+                    return false;
+                }
 
                 //Level object
                 level = new Level("graphics/level1.txt", pRenderer, 1);
-
 
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
                 return false;
             }
-            if (TTF_Init() == -1)
-            {
-                std::cout << "Error initializing ttf" << TTF_GetError() << std::endl;
-                return false;
-            }
         }
         else{
             return false;
         }
+        player = new Player(pRenderer);
         pCollider= new collider();
         tCollider= new collider();
         startScreen = new StartScreen(pRenderer);
