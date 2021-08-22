@@ -12,7 +12,7 @@ class Level
         int mLWidth, mLHeight;
         int mRow, mCol;
         int tileWidth, tileHeight;
-        int scale = 4;
+        int scale = 1;
         SDL_Rect* clips;
         int** mTileMatrix;
         TextureWrapper* mTexture;

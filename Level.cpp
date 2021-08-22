@@ -7,6 +7,8 @@ Level::Level(const char fileName[], SDL_Renderer* renderer, int levelNum)
     mLevelNum = levelNum;
     camera.w = WindowWidth;
     camera.h = WindowHeight;
+    camera.y = 0;
+    camera.x = 0;
     
     //Load level info file
     int info[4]; //Order col, row, level width, level height
@@ -63,12 +65,12 @@ Level::Level(const char fileName[], SDL_Renderer* renderer, int levelNum)
 
     //Create a texture wrapper object
     mTexture = new TextureWrapper(renderer);
-    mTexture->loadFromFile("graphics/spelunky.png");
+    mTexture->loadFromFile("graphics/spriteSheet/tileSheet.png");
 
     //Create clips from the texture
 
-    const int numCols = 2, numRows = 29;
-    tileWidth = 16, tileHeight = 16;
+    const int numCols = 4, numRows = 2;
+    tileWidth = 64, tileHeight = 64;
     int index = 0;
 
     clips = new SDL_Rect[numCols * numRows];

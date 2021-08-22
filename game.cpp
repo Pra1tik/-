@@ -30,7 +30,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 player = new Player(pRenderer);
 
                 //Level object
-                level = new Level("graphics/lv1.txt", pRenderer, 1);
+                level = new Level("graphics/newlvl1.txt", pRenderer, 1);
 
 
             }
@@ -198,12 +198,13 @@ void Game::Collider(Player* player,Level* level)
     vec player1=player->getPosition();
     SDL_Rect pCol{player1.x,player1.y,80,110};
     pCollider->setRect(pCol);
-    int FirstRow = ((player->getPosition().y)/64 - 2) > 0 ? (player->getPosition().y)/64 - 2 : 0;
-    int LastRow = FirstRow >= 14 ? 18 : FirstRow+5;
+    int FirstRow = ((player->getPosition().y)/64 - 1) > 0 ? (player->getPosition().y)/64 - 1 : 0;
+    int LastRow = FirstRow + 4 >= level->mRow - 1 ? level->mRow - 1 : FirstRow+4;
     int FirstColumn = (player->getPosition().x)/64 - 2 > 0 ? (player->getPosition().x)/64 - 2 : 0;
+    int LastColumn = FirstColumn + 5 >= level->mCol - 1 ? level->mCol - 1 : FirstColumn + 5;
     for (int row = LastRow;row>=FirstRow;row--)
     {
-        for ( int column = FirstColumn; column<FirstColumn+5; column++)
+        for ( int column = FirstColumn; column < LastColumn; column++)
         {
             SDL_Rect pTil{column  * 64,row * 64 -25,64,64};  // y is subtracted by the half of tilewidth to make player stay on the top of tile
             tCollider->setRect(pTil);
@@ -218,8 +219,8 @@ void Game::Collider(Player* player,Level* level)
                     vec offset=pCollider->getOffset();
                     if (pCollider->GetPositionX()>tCollider->GetPositionX()){offset.x*=-1;}
                     // if (pCollider->GetPositionX()>tCollider->GetPositionX()+50){offset.x/=2;}
-                    if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+64){offset.x=0;}
-                    if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+64){offset.x=0;}
+                    if (pCollider->GetPositionX()<tCollider->GetPositionX() && pCollider->GetPositionX()+80>tCollider->GetPositionX()+TileWidth){offset.x=0;}
+                    if (pCollider->GetPositionX()>tCollider->GetPositionX() && pCollider->GetPositionX()<tCollider->GetPositionX()+TileWidth){offset.x=0;}
                     if (pCollider->GetPositionY()>tCollider->GetPositionY())
                     {
                         offset.y*=-1;

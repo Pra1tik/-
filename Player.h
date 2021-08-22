@@ -20,12 +20,15 @@ class Player : public Character
         bool mAlive = true;
         bool jumpFlag = false;
         bool isJumping = false;
+        bool isShooting = false;
         int gravity = 30;
         const int imp = 900;
         const int fall = 0;
         bool falling=false;
         int tileRowPlayerClass[100];
         int count=0;
+        vec previousOffset {0,0};
         vec currentFrame{0,0};
         SDL_RendererFlip flip;
+        int pTiles;
 };
