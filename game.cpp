@@ -194,15 +194,19 @@ void Game::update()
            
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
-                if(playerBullet->bulletAlive)
+                if(playerBullet->bulletAlive && !(*it)->dead)
                 {
                     playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
                     
                 }
-                enemyUpdateValue = (*it)->update(player->getPosition());
-                if (enemyUpdateValue == 3)
+                if(!(*it)->dead)
                 {
-                    player->reduceLife();
+                    enemyUpdateValue = (*it)->update(player->getPosition());
+                    if (enemyUpdateValue == 3)
+                    {
+                        player->reduceLife();
+                    }
+                
                 }
                 
             }
