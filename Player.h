@@ -38,4 +38,5 @@ class Player : public Character
         vec currentFrame{0,0};
         SDL_RendererFlip flip;
         int pTiles;
+        int shotTimer = 0;
 };

@@ -100,7 +100,7 @@ void Game::render()
             healthTexture->loadFromRenderedText("LIVES  : " + player->getLives(),color);
             healthTexture->render(10, 10);
             player->render(currentLevel->camera);
-            enemies->render(currentLevel->camera);
+            //enemies->render(currentLevel->camera);
             enem->render(level1->camera, player->getPosition());
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
@@ -174,19 +174,24 @@ void Game::update()
             }
             
             int enemyUpdateValue;
-            enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+            // enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}, playerBullet->bulletAlive);
+           
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
-                enemyUpdateValue = (*it)->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+                if(playerBullet->bulletAlive)
+                {
+                    playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                    
+                }
+                enemyUpdateValue = (*it)->update(player->getPosition());
                 if (enemyUpdateValue == 3)
                 {
                     player->reduceLife();
                 }
-                else if(enemyUpdateValue == 2)
-                {
-                    playerBullet->bulletAlive = false;
-                }
+                
             }
+        
+            
             
 
             //For bullet
