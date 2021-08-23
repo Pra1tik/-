@@ -26,7 +26,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         if(pWindow!=0){
             pRenderer=SDL_CreateRenderer(pWindow,-1,0);
             if (pRenderer!=0){
-                SDL_SetRenderDrawColor(pRenderer,0,0,255,255);
+                SDL_SetRenderDrawColor(pRenderer,255,255,255,255);
 
                 if (TTF_Init() == -1)
                 {
@@ -120,7 +120,7 @@ void Game::render()
             }
             for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
             {
-                (*it)->render(currentLevel->camera, player->getPosition());
+                (*it)->render(currentLevel->camera, player->getPosition());                
             }
 
             if(playerBullet->bulletAlive)
@@ -208,6 +208,32 @@ void Game::update()
                     }
                 
                 }
+                
+            }
+
+            for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
+            {
+                if(playerBullet->bulletAlive && !(*it)->dead)
+                {
+                    playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                    
+                }
+                if(!(*it)->dead)
+                {
+                    enemyUpdateValue = (*it)->update(player->getPosition());
+                    if (enemyUpdateValue == 3)
+                    {
+                        player->reduceLife();
+                    }
+
+                    if((*it)->arrowPlayerCollision(SDL_Rect{player->getPosition().x, player->getPosition().y, playerWidth, playerHeight}))
+                    {
+                        player->reduceLife();
+                    }
+    
+                }
+
+
                 
             }
         
