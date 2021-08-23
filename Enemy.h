@@ -8,7 +8,8 @@ class Enemy
         Enemy(SDL_Renderer* renderer, vec pos, vec range);
         ~Enemy();
 
-        int update(vec pPos, SDL_Rect Bullet);
+        int update(vec pPos);
+        bool bulletEnemyCollision(SDL_Rect Bullet);
         void render(SDL_Rect camera);
 
 

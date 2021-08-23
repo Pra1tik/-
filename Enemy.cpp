@@ -24,19 +24,23 @@ Enemy::Enemy(SDL_Renderer* renderer, vec pos, vec range)
 }
 
 
-int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
+int Enemy::update(vec pPos) //2 for collsion with bullet
 {
     if(!dead)
     {
         SDL_Rect pRect = {pPos.x, pPos.y, playerWidth, playerHeight};
         SDL_Rect eRect = {ePos.x, ePos.y, eTexture->getWidth()/6, eTexture->getHeight()};
 
-        if (Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
-            Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
-        {
-            dead = true;
-            return 2;
-        }
+        // if(bulletAlive)
+        // {
+        //     if (Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
+        //         Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
+        //     {
+        //         dead = true;
+        //         return 2;
+        //     }
+        // }
+        
 
         if(!(pRect.x < (eRect.x + eRect.w) && (pRect.x + pRect.w) > eRect.x &&
             pRect.y < (eRect.y + eRect.h) && (pRect.y + pRect.h) > eRect.y))
@@ -48,12 +52,6 @@ int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
 
             ePos.x += eVel.x;
 
-            //Shoot
-            float dsquare = (pPos.x-ePos.x)*(pPos.x-ePos.x) + (pPos.y-ePos.y)*(pPos.y-ePos.y);
-            if(dsquare <= 1000)
-            {
-                return 1;
-            }
         }
         else
         {
@@ -64,6 +62,20 @@ int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
     }
 
     return 0;
+}
+
+bool Enemy::bulletEnemyCollision(SDL_Rect Bullet)
+{
+    SDL_Rect eRect = {ePos.x, ePos.y, eTexture->getWidth()/6, eTexture->getHeight()};
+    
+   if(Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
+            Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
+    {
+        dead = true;
+        return true;
+    }
+
+    return false;
 }
 
 void Enemy::render(SDL_Rect camera)
