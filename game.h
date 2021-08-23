@@ -8,6 +8,7 @@
 #include <vector>
 #include "Level.h"
 #include "Enemy.h"
+#include "Enemy2.h"
 #include <vector>
 
 
@@ -93,6 +94,8 @@ class Game{
         //For health bar
         TextureWrapper* healthTexture;
         SDL_Color color = {0,0,0,255};
+
+        class Enemy2* enem;
 };
 
 

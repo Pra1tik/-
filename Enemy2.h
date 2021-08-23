@@ -9,7 +9,7 @@ class Enemy2
         ~Enemy2();
 
         int update(vec pPos, SDL_Rect Bullet);
-        void render(SDL_Rect camera);
+        void render(SDL_Rect camera, vec pPos);
 
 
         vec ePos;

@@ -63,7 +63,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 
         //For enemy
         enemies = new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640});
-       
+        enem = new Enemy2(pRenderer, {456,200});
 
         //Initialize enemy
         enemy1.push_back(new Enemy(pRenderer, vec{456, 400}, vec{456, 886}));
@@ -97,14 +97,11 @@ void Game::render()
             break;
         case GAME_SCREEN:
             currentLevel->render();
-            healthTexture->loadFromRenderedText("LIVES  :  3",color);
+            healthTexture->loadFromRenderedText("LIVES  : " + player->getLives(),color);
             healthTexture->render(10, 10);
             player->render(currentLevel->camera);
-            // if (!enemyDead)
-            // {
-            //     enemies->render(level->camera);
-            // }
             enemies->render(currentLevel->camera);
+            enem->render(level1->camera, player->getPosition());
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
                 (*it)->render(currentLevel->camera);
@@ -180,12 +177,17 @@ void Game::update()
             enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
-                (*it)->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+                enemyUpdateValue = (*it)->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()});
+                if (enemyUpdateValue == 3)
+                {
+                    player->reduceLife();
+                }
+                else if(enemyUpdateValue == 2)
+                {
+                    playerBullet->bulletAlive = false;
+                }
             }
-            if(enemyUpdateValue == 2)
-            {
-                playerBullet->bulletAlive = false;
-            }
+            
 
             //For bullet
             if(playerBullet->bulletAlive)

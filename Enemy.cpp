@@ -31,6 +31,13 @@ int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
         SDL_Rect pRect = {pPos.x, pPos.y, playerWidth, playerHeight};
         SDL_Rect eRect = {ePos.x, ePos.y, eTexture->getWidth()/6, eTexture->getHeight()};
 
+        if (Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
+            Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
+        {
+            dead = true;
+            return 2;
+        }
+
         if(!(pRect.x < (eRect.x + eRect.w) && (pRect.x + pRect.w) > eRect.x &&
             pRect.y < (eRect.y + eRect.h) && (pRect.y + pRect.h) > eRect.y))
         {
@@ -48,12 +55,12 @@ int Enemy::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
                 return 1;
             }
         }
-        if (Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
-            Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
+        else
         {
-            dead = true;
-            return 2;
+            //collision with player
+            return 3;
         }
+        
     }
 
     return 0;

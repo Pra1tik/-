@@ -6,7 +6,7 @@ Enemy2::Enemy2(SDL_Renderer* renderer, vec pos)
     ePos = pos;
 
     eTexture = new TextureWrapper(renderer);
-    if(!eTexture->loadFromFile("graphics/spriteSheet/zombie2.png"))
+    if(!eTexture->loadFromFile("graphics/spriteSheet/archer.png"))
     {
         std::cout << "Failed to load enemy.\n";
     }
@@ -44,12 +44,12 @@ int Enemy2::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
     return 0;
 }
 
-void Enemy2::render(SDL_Rect camera)
+void Enemy2::render(SDL_Rect camera, vec pPos)
 {
-    // SDL_RendererFlip flip = eVel.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-    // int num = (int) ((SDL_GetTicks()/100)%6);
-    // SDL_Rect src = {num* eTexture->getWidth()/6 + 4, 0 , eTexture->getWidth()/6, eTexture->getHeight()};
-    // SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/6 , eTexture->getHeight()};
+    SDL_RendererFlip flip = ePos.x > pPos.x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    int num = (int) ((SDL_GetTicks()/100)%6);
+    SDL_Rect src = {0* eTexture->getWidth()/6 , 0 , eTexture->getWidth(), eTexture->getHeight()/2};
+    SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/6 , eTexture->getHeight()};
     // if (dead && !stopRendering)
     // {
     //     int time = SDL_GetTicks()/1000;
@@ -62,10 +62,11 @@ void Enemy2::render(SDL_Rect camera)
     //         stopRendering = true;
     //     }
     // }
-    // else if(!dead)
-    // {
-    //     eTexture->render(src, dest, 0.0, flip);
-    // }
+    if(!dead)
+    {
+        eTexture->render(src, dest, 0.0, flip);
+    }
+    eTexture->render({0,0,80,110},{ePos.x - camera.x ,ePos.y -camera.y, 80, 110});
 }
 
 Enemy2::~Enemy2()

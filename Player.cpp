@@ -89,7 +89,7 @@ void Player::update()
     if(falling)
     {
         for (int i{0};i<pTiles;i++){tileRowPlayerClass[i]=-2;}
-        mVel.y = (mVel.y - gravity);
+        mVel.y = (mVel.y - gravity) > maxFall ? mVel.y - gravity : maxFall;
         if (mVel.y>0){mPos.y -= mVel.y * dt; }
         else {mPos.y -= 2*mVel.y * dt; }
     }
@@ -214,4 +214,18 @@ void Player::animate()
         currentFrame.y = 1;
     }
 
+}
+
+std::string Player::getLives()
+{
+    std::string str;
+    std::stringstream ss;
+    ss << mlives;
+    ss >> str;
+    return str;
+}
+
+void Player::reduceLife()
+{
+    mlives -= 1;
 }

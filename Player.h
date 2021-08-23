@@ -2,6 +2,7 @@
 #include "Character.h"
 #include <SDL2/SDL.h>
 #include "defaultVar.h"
+#include <sstream>
 
 class Player : public Character
 {
@@ -13,12 +14,14 @@ class Player : public Character
         void handleInput(SDL_Event& e, float deltaTime);
         void CollisionUpdate (vec offset,int tileRow[], int tiles);
         void animate();
+        void reduceLife();
+        std::string getLives();
 
         bool leftFacing = false, rightFacing = true;
         bool shake = false;
 
     private:
-        int mlives = 3;
+        int mlives = 5;
         float dt = 0;
         bool mAlive = true;
         bool jumpFlag = false;
@@ -27,6 +30,7 @@ class Player : public Character
         int gravity = 30;
         const int imp = 900;
         const int fall = 0;
+        const int maxFall = -750;
         bool falling=false;
         int tileRowPlayerClass[100];
         int count=0;
