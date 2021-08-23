@@ -6,7 +6,7 @@ Enemy2::Enemy2(SDL_Renderer* renderer, vec pos)
     ePos = pos;
 
     eTexture = new TextureWrapper(renderer);
-    if(!eTexture->loadFromFile("graphics/spriteSheet/archer.png"))
+    if(!eTexture->loadFromFile("graphics/spriteSheet/archer112.png"))
     {
         std::cout << "Failed to load enemy.\n";
     }

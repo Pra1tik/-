@@ -75,6 +75,18 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         enemy1.push_back(new Enemy(pRenderer, vec{402, 1168}, vec{402, 542}));
         enemy1.push_back(new Enemy(pRenderer, vec{1417, 1232}, vec{1417, 1737}));
 
+        enemy1a.push_back(new Enemy2(pRenderer, vec{2325, 208}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{2708, 400}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{2158, 1040}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{2158, 1232}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{72, 912}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{72, 1168}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{888, 400}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{1598, 208}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{2108, 400}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{3058, 912}));
+        enemy1a.push_back(new Enemy2(pRenderer, vec{3175, 1296}));
+
 
         //For bullet
         playerBullet = new bullet;
@@ -105,6 +117,10 @@ void Game::render()
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
                 (*it)->render(currentLevel->camera);
+            }
+            for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
+            {
+                (*it)->render(currentLevel->camera, player->getPosition());
             }
 
             if(playerBullet->bulletAlive)
