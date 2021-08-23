@@ -21,7 +21,8 @@ class Enemy
         int nextShot = 0;
         bool die = false;
     private:
-        bool stopRendering;  
+        bool stopRendering;
+        int counter = 0;  
 };
 
 

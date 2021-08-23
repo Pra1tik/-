@@ -47,9 +47,9 @@ int Enemy2::update(vec pPos, SDL_Rect Bullet) //2 for collsion with bullet
 void Enemy2::render(SDL_Rect camera, vec pPos)
 {
     SDL_RendererFlip flip = ePos.x > pPos.x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-    int num = (int) ((SDL_GetTicks()/100)%6);
-    SDL_Rect src = {0* eTexture->getWidth()/6 , 0 , eTexture->getWidth(), eTexture->getHeight()/2};
-    SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/6 , eTexture->getHeight()};
+    int num = (int) ((SDL_GetTicks()/100)%11);
+    SDL_Rect src = {/*(num2+1)*/eTexture->getWidth()/22 , 0 , eTexture->getWidth()/22, eTexture->getHeight()};
+    SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/11 , eTexture->getHeight()};
     // if (dead && !stopRendering)
     // {
     //     int time = SDL_GetTicks()/1000;
@@ -66,7 +66,6 @@ void Enemy2::render(SDL_Rect camera, vec pPos)
     {
         eTexture->render(src, dest, 0.0, flip);
     }
-    eTexture->render({0,0,80,110},{ePos.x - camera.x ,ePos.y -camera.y, 80, 110});
 }
 
 Enemy2::~Enemy2()
