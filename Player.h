@@ -14,7 +14,7 @@ class Player : public Character
         void handleInput(SDL_Event& e, float deltaTime);
         void CollisionUpdate (vec offset,int tileRow[], int tiles);
         void animate();
-        void reduceLife();
+        void reduceLife(int i); //0 for enemyCollision, 1 for arrow Collision
         std::string getLives();
 
         bool leftFacing = false, rightFacing = true;

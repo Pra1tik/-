@@ -225,16 +225,25 @@ std::string Player::getLives()
     return str;
 }
 
-void Player::reduceLife()
+void Player::reduceLife(int i)
 {
-    shotTimer += 1;
-    if(shotTimer <= 1)
+    if(i == 0)
     {
-        mlives -=1;
+        shotTimer += 1;
+        if(shotTimer <= 1)
+        {
+            mlives -=1;
+        }
+        if(shotTimer >= 60)
+        {
+            mlives -= 1;
+            shotTimer = 0;
+        }
     }
-    if(shotTimer >= 60)
+    else if(i == 1)
     {
         mlives -= 1;
-        shotTimer = 0;
     }
+    
 }
+

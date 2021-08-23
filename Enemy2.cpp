@@ -81,11 +81,12 @@ bool Enemy2::arrowPlayerCollision(const SDL_Rect& playerRect)
 {
     if(arrow1.arrowAlive)
     {
-        SDL_Rect arrowRect = {arrow1.arrowtPos.x, arrow1.arrowtPos.y, arrowTexture->getWidth()/6, arrowTexture->getHeight()};
+        SDL_Rect arrowRect = {arrow1.arrowtPos.x, arrow1.arrowtPos.y, arrowTexture->getWidth(), arrowTexture->getHeight()};
     
         if(arrowRect.x < (playerRect.x + playerRect.w) && (arrowRect.x + arrowRect.w)> playerRect.x &&
                     arrowRect.y < (playerRect.y + playerRect.h) && (arrowRect.y + arrowRect.h) > playerRect.y)
         {
+            //std::cout << "Collide" << std::endl;
             arrow1.arrowAlive = false;
             return true;
         }

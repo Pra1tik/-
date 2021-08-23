@@ -204,7 +204,7 @@ void Game::update()
                     enemyUpdateValue = (*it)->update(player->getPosition());
                     if (enemyUpdateValue == 3)
                     {
-                        player->reduceLife();
+                        player->reduceLife(0);
                     }
                 
                 }
@@ -223,12 +223,12 @@ void Game::update()
                     enemyUpdateValue = (*it)->update(player->getPosition());
                     if (enemyUpdateValue == 3)
                     {
-                        player->reduceLife();
+                        player->reduceLife(0);
                     }
 
                     if((*it)->arrowPlayerCollision(SDL_Rect{player->getPosition().x, player->getPosition().y, playerWidth, playerHeight}))
                     {
-                        player->reduceLife();
+                        player->reduceLife(1);
                     }
     
                 }
