@@ -50,7 +50,7 @@ int Enemy2::update(vec pPos)
                 arrow1.arrowAlive = true;
                 arrow1.arrowtPos = {ePos.x, ePos.y+eTexture->getHeight()/2 - 20};
 
-                arrow1.arrowVel.x = (pPos.x >= ePos.x ? 10 : -10);
+                arrow1.arrowVel.x = (pPos.x >= ePos.x ? 8 : -8);
                 arrFlip = pPos.x > ePos.x ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
             }
                 

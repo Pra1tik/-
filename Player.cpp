@@ -57,7 +57,7 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
         mAcc.y = 0;
         mPos.y += offset.y;
     }
-    std::cout << offset.x << "  " <<offset.y <<std::endl;
+    //std::cout << offset.x << "  " <<offset.y <<std::endl;
     // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
     previousOffset = {offset.x , offset.y};

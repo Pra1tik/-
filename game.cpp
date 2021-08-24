@@ -36,12 +36,13 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 
                 //Level object
                 level1 = new Level("graphics/level1.txt", pRenderer, 1);
-                level2 = new Level("graphics/lv1.txt", pRenderer, 1);
+                level2 = new Level("graphics/level2.txt", pRenderer, 1);
                 currentLevel = level1;
 
                 //Initialize font
-                TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",40);
+                TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",60);
                 healthTexture = new TextureWrapper(pRenderer, font);
+                levelCompleteTexture = new TextureWrapper(pRenderer, font);
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
@@ -111,15 +112,20 @@ void Game::render()
             healthTexture->loadFromRenderedText("LIVES  : " + player->getLives(),color);
             healthTexture->render(10, 10);
             player->render(currentLevel->camera);
-            for(auto it = enemy1.begin(); it != enemy1.end(); it++)
-            {
-                (*it)->render(currentLevel->camera);
-            }
-            for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
-            {
-                (*it)->render(currentLevel->camera, player->getPosition());                
-            }
 
+            if(levelNum == 1)
+            {
+                for(auto it = enemy1.begin(); it != enemy1.end(); it++)
+                {
+                    (*it)->render(currentLevel->camera);
+                }
+                for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
+                {
+                    (*it)->render(currentLevel->camera, player->getPosition());                
+                }
+
+            }
+            
             if(playerBullet->bulletAlive)
             {
                 bulletTexture->render(playerBullet->bulletPos.x - currentLevel->camera.x, playerBullet->bulletPos.y - currentLevel->camera.y);
@@ -131,6 +137,10 @@ void Game::render()
             {
                 if(levelNum == 1)
                 {
+                    levelCompleteTexture->loadFromRenderedText("Level 1 complete", color);
+                    levelCompleteTexture->render(WindowWidth/2-10, WindowHeight/2-10);
+                    SDL_RenderPresent(pRenderer);         
+                    SDL_Delay(1000);
                     levelNum = 2;
                     currentLevel = level2;
                     killCount = 0;
@@ -140,6 +150,10 @@ void Game::render()
                 else if(levelNum == 2)
                 {
                     //Game over
+                    levelCompleteTexture->loadFromRenderedText("Game completed", color);
+                    levelCompleteTexture->render(WindowWidth/2-10, WindowHeight/2-10);
+                    SDL_RenderPresent(pRenderer);         
+                    SDL_Delay(1000);
                     killCount = 0;
                 }
             }
@@ -188,52 +202,54 @@ void Game::update()
             
             int enemyUpdateValue;
             // enemyUpdateValue = enemies->update(player->getPosition(),{playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}, playerBullet->bulletAlive);
-           
-            for(auto it = enemy1.begin(); it != enemy1.end(); it++)
+            
+            if(levelNum == 1)
             {
-                if(playerBullet->bulletAlive && !(*it)->dead)
+                for(auto it = enemy1.begin(); it != enemy1.end(); it++)
                 {
-                    playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                    if(playerBullet->bulletAlive && !(*it)->dead)
+                    {
+                        playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        
+                    }
+                    if(!(*it)->dead)
+                    {
+                        enemyUpdateValue = (*it)->update(player->getPosition());
+                        if (enemyUpdateValue == 3)
+                        {
+                            player->reduceLife(0);
+                        }
+                    
+                    }
                     
                 }
-                if(!(*it)->dead)
+
+                for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
                 {
-                    enemyUpdateValue = (*it)->update(player->getPosition());
-                    if (enemyUpdateValue == 3)
+                    if(playerBullet->bulletAlive && !(*it)->dead)
                     {
-                        player->reduceLife(0);
+                        playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        
                     }
-                
-                }
-                
-            }
-
-            for(auto it = enemy1a.begin(); it != enemy1a.end(); it++)
-            {
-                if(playerBullet->bulletAlive && !(*it)->dead)
-                {
-                    playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
-                    
-                }
-                if(!(*it)->dead)
-                {
-                    enemyUpdateValue = (*it)->update(player->getPosition());
-                    if (enemyUpdateValue == 3)
+                    if(!(*it)->dead)
                     {
-                        player->reduceLife(0);
-                    }
+                        enemyUpdateValue = (*it)->update(player->getPosition());
+                        if (enemyUpdateValue == 3)
+                        {
+                            player->reduceLife(0);
+                        }
 
-                    if((*it)->arrowPlayerCollision(SDL_Rect{player->getPosition().x, player->getPosition().y, playerWidth, playerHeight}))
-                    {
-                        player->reduceLife(1);
-                    }
-    
-                }
-
-
-                
-            }
+                        if((*it)->arrowPlayerCollision(SDL_Rect{player->getPosition().x, player->getPosition().y, playerWidth, playerHeight}))
+                        {
+                            player->reduceLife(1);
+                        }
         
+                    }
+                    
+                }
+        
+            }
+            
             
             
 
