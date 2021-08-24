@@ -21,6 +21,8 @@ Enemy::Enemy(SDL_Renderer* renderer, vec pos, vec range)
     dead = false;
 
     stopRendering = false;
+
+    deadFrame = 0;
 }
 
 
@@ -75,10 +77,13 @@ void Enemy::render(SDL_Rect camera)
     if (dead && !stopRendering)
     {
         counter++;
-        //int time = SDL_GetTicks()/1000;
-        int num = (int) ((SDL_GetTicks()/100)%3);
-        SDL_Rect src = {num* e2Texture->getWidth()/3 , 0 , e2Texture->getWidth()/3, e2Texture->getHeight()};
-        SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , e2Texture->getWidth()/3 , e2Texture->getHeight()};
+        int time = SDL_GetTicks()/100;
+        deadFrame++;
+        if (deadFrame>=2){
+            deadFrame = 2;
+        }
+        SDL_Rect src = {deadFrame* e2Texture->getWidth()/3 , 0 , e2Texture->getWidth()/3, e2Texture->getHeight()};
+        SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y + 20, e2Texture->getWidth()/3 , e2Texture->getHeight()};
         e2Texture->render(src,dest);
         if (counter >= 120)
         {

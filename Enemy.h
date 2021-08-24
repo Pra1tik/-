@@ -20,6 +20,7 @@ class Enemy
         bool dead;
         int nextShot = 0;
         bool die = false;
+        int deadFrame;
     private:
         bool stopRendering;
         int counter = 0;  

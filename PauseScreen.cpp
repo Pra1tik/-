@@ -9,7 +9,7 @@ PauseScreen::PauseScreen(SDL_Renderer* pRenderer)
     resume = new TextureWrapper(pRenderer,font);
     exit = new TextureWrapper(pRenderer, font);
 
-    SDL_Color color = {0,0,0};
+    SDL_Color color = {255,255,255};
 
     resume->loadFromRenderedText("RESUME",color);
     exit->loadFromRenderedText("EXIT",color);
@@ -40,11 +40,11 @@ bool PauseScreen::isInsideResume(vec mousePos)
 
 void PauseScreen::render()
 {
-    SDL_SetRenderDrawColor(cRenderer,0,255,0,255);
-    SDL_RenderFillRect(cRenderer,&destination1);
-    SDL_SetRenderDrawColor(cRenderer,255,0,0,255);
-    SDL_RenderFillRect(cRenderer,&destination2);
+    // SDL_SetRenderDrawColor(cRenderer,0,255,0,255);
+    // SDL_RenderFillRect(cRenderer,&destination1);
+    // SDL_SetRenderDrawColor(cRenderer,255,0,0,255);
+    // SDL_RenderFillRect(cRenderer,&destination2);
     resume->render(destination1.x,destination1.y);
     exit->render(destination2.x,destination2.y);
-    SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
+    // SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
 }

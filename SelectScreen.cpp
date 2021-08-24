@@ -7,7 +7,7 @@ SelectScreen::SelectScreen(SDL_Renderer* pRenderer)
     playText = new TextureWrapper(pRenderer,pTTF);
     exitText = new TextureWrapper(pRenderer,pTTF);
     instructionText = new TextureWrapper(pRenderer,pTTF);
-    SDL_Color color = {0,0,0};
+    SDL_Color color = {255,255,255};
     playText->loadFromRenderedText("PLAY",color);
     exitText->loadFromRenderedText("EXIT",color);
     instructionText->loadFromRenderedText("INSTRUCTION",color);
@@ -21,19 +21,19 @@ void SelectScreen::render()
 
     //render rects
     
-    SDL_SetRenderDrawColor(cRenderer,0,255,0,255);
-    SDL_RenderFillRect(cRenderer,&playButton);
-    SDL_SetRenderDrawColor(cRenderer,255,0,0,255);
-    SDL_RenderFillRect(cRenderer,&exitButton);
-    SDL_SetRenderDrawColor(cRenderer,255,255,0,255);
-    SDL_RenderFillRect(cRenderer,&instructionButton);
+    // SDL_SetRenderDrawColor(cRenderer,0,255,0,255);
+    // SDL_RenderFillRect(cRenderer,&playButton);
+    // SDL_SetRenderDrawColor(cRenderer,255,0,0,255);
+    // SDL_RenderFillRect(cRenderer,&exitButton);
+    // SDL_SetRenderDrawColor(cRenderer,255,255,0,255);
+    // SDL_RenderFillRect(cRenderer,&instructionButton);
 
     //render texts
 
     playText->render(playButton.x,playButton.y);
     exitText->render(exitButton.x,exitButton.y);
     instructionText->render(instructionButton.x,instructionButton.y);
-    SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
+    // SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
 }
 
 bool SelectScreen::isInsidePlay(vec mousePos)

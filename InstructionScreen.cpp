@@ -6,7 +6,7 @@ InstructionScreen::InstructionScreen(SDL_Renderer* pRenderer)
 {
     cRenderer = pRenderer;
     TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",50);
-    SDL_Color color = {0,0,0};
+    SDL_Color color = {255,255,255};
     Instruction = new TextureWrapper(pRenderer);
     returnText = new TextureWrapper(pRenderer,font);
     Instruction->loadFromFile("graphics/controls.png");
@@ -19,10 +19,10 @@ InstructionScreen::InstructionScreen(SDL_Renderer* pRenderer)
 void InstructionScreen::render()
 {
     Instruction->render(source,destination);
-    SDL_SetRenderDrawColor(cRenderer,0,255,255,255);
-    SDL_RenderFillRect(cRenderer,&text);
+    // SDL_SetRenderDrawColor(cRenderer,0,255,255,255);
+    // SDL_RenderFillRect(cRenderer,&text);
     returnText->render(text.x,text.y);
-    SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
+    // SDL_SetRenderDrawColor(cRenderer,0,0,255,255);
 }
 
 bool InstructionScreen::isInsideReturn(vec mousePos)

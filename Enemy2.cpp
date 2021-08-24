@@ -12,10 +12,11 @@ Enemy2::Enemy2(SDL_Renderer* renderer, vec pos)
     }
 
     arrowTexture = new TextureWrapper(renderer);
-    arrowTexture->loadFromFile("graphics/newBullet.png");
+    arrowTexture->loadFromFile("graphics/Arrow.png");
 
     dead = false;
     stopRendering = false;
+    currentFrame = 0;
 }
 
 
@@ -30,7 +31,7 @@ int Enemy2::update(vec pPos)
         {
             arrow1.arrowtPos.x += arrow1.arrowVel.x;
 
-            if(abs(arrow1.arrowtPos.x - pPos.x) >= 500)
+            if(abs(arrow1.arrowtPos.x - pPos.x) >= WindowWidth)
             {
                 arrow1.arrowAlive = false;
             }
@@ -43,13 +44,14 @@ int Enemy2::update(vec pPos)
            //Shoot the player
             int dx = abs(pPos.x-ePos.x);
             int dy = abs(pPos.y - ePos.y);
-            if(!arrow1.arrowAlive && dx <= 3000 && dy <= playerHeight)
+            if(!arrow1.arrowAlive && dx <= WindowWidth && dy <= playerHeight)
             {
-                //std::cout << "SHoot" << std::endl;
+                animate();
                 arrow1.arrowAlive = true;
-                arrow1.arrowtPos = {ePos.x, ePos.y+eTexture->getHeight()/2};
+                arrow1.arrowtPos = {ePos.x, ePos.y+eTexture->getHeight()/2 - 20};
 
                 arrow1.arrowVel.x = (pPos.x >= ePos.x ? 10 : -10);
+                arrFlip = pPos.x > ePos.x ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
             }
                 
         }
@@ -70,6 +72,8 @@ bool Enemy2::bulletEnemyCollision(const SDL_Rect& Bullet)
    if(Bullet.x < (eRect.x + eRect.w) && (Bullet.x + Bullet.w)> eRect.x &&
             Bullet.y < (eRect.y + eRect.h) && (Bullet.y + Bullet.h) > eRect.y)
     {
+        
+        arrow1.arrowAlive = false;
         dead = true;
         return true;
     }
@@ -99,28 +103,48 @@ void Enemy2::render(SDL_Rect camera, vec pPos)
 {
     SDL_RendererFlip flip = ePos.x > pPos.x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     int num = (int) ((SDL_GetTicks()/100)%11);
-    SDL_Rect src = {/*(num2+1)*/eTexture->getWidth()/22 , 0 , eTexture->getWidth()/22, eTexture->getHeight()};
+    SDL_Rect src = {currentFrame * eTexture->getWidth()/22 , 0 , eTexture->getWidth()/22, eTexture->getHeight()};
     SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , eTexture->getWidth()/11 , eTexture->getHeight()};
-    // if (dead && !stopRendering)
-    // {
-    //     int time = SDL_GetTicks()/1000;
-    //     int num = (int) ((SDL_GetTicks()/100)%3);
-    //     SDL_Rect src = {num* e2Texture->getWidth()/3 , 0 , e2Texture->getWidth()/3, e2Texture->getHeight()};
-    //     SDL_Rect dest = {ePos.x - camera.x , ePos.y - camera.y , e2Texture->getWidth()/3 , e2Texture->getHeight()};
-    //     e2Texture->render(src,dest);
-    //     if (time > 7)
-    //     {
-    //         stopRendering = true;
-    //     }
-    // }
     if(!dead)
     {
         eTexture->render(src, dest, 0.0, flip);
     }
+    else if (dead && !stopRendering)
+    {
+        double angle;
+        flip = SDL_FLIP_HORIZONTAL ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+        if (flip ==  SDL_FLIP_VERTICAL)
+        {
+            angle =  270;
+        }
+        else
+        {
+            angle = 90;
+        }
+        counter++;
+        eTexture->render(src,{dest.x , dest.y+30,dest.w, dest.h}, angle, flip);
+        if (counter > 120)
+        {
+            stopRendering = true;
+        }
+    }
 
     if(arrow1.arrowAlive)
     {
-        arrowTexture->render(arrow1.arrowtPos.x-camera.x, arrow1.arrowtPos.y-camera.y);
+        arrowTexture->render(arrow1.arrowtPos.x-camera.x, arrow1.arrowtPos.y-camera.y, 0, SDL_FLIP_HORIZONTAL);
+    }
+}
+
+void Enemy2::animate()
+{
+    currentFrame += 2;
+    if (currentFrame >= 5)
+    {
+        currentFrame = 0;
+    }
+    if (dead)
+    {
+        currentFrame = 0;
     }
 }
 

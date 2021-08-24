@@ -31,7 +31,7 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
     {
         tileRowPlayerClass[i]=tileRow[i];
     }
-    if  (abs(offset.y) >= (TileHeight - 1))
+    if  (abs(offset.y) >= TileHeight)
     {
         offset.y=0;
     }
@@ -46,8 +46,6 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
         if (previousOffset.x == offset.x && previousOffset.y == offset.y)
         {
             mPos.y += offset.y;
-            isJumping = false;
-            falling = false;
         }
     }
     else if(offset.x== 0)
@@ -59,7 +57,7 @@ void Player::CollisionUpdate(vec offset,int tileRow[],int tiles)
         mAcc.y = 0;
         mPos.y += offset.y;
     }
-    // std::cout << offset.x << "  " <<offset.y <<std::endl;
+    std::cout << offset.x << "  " <<offset.y <<std::endl;
     // if(abs(offset.x)!=mVel.x){mPos.x += offset.x;}
     mPos.x += offset.x;
     previousOffset = {offset.x , offset.y};
@@ -243,6 +241,16 @@ void Player::reduceLife(int i)
     else if(i == 1)
     {
         mlives -= 1;
+    }
+    if (mlives < 0)
+    {
+        for (int i = 0 ; i < pTiles; i++)
+        {
+            tileRowPlayerClass[i]=-2;
+        }
+        setPosition(400,100);
+        falling = true;
+        mlives = 5;
     }
     
 }

@@ -12,6 +12,7 @@ class Enemy2
         void render(SDL_Rect camera, vec pPos);
         bool bulletEnemyCollision(const SDL_Rect& Bullet);
         bool arrowPlayerCollision(const SDL_Rect& player);
+        void animate();
 
         vec ePos;
         TextureWrapper* eTexture;
@@ -30,6 +31,10 @@ class Enemy2
     private:
         bool stopRendering;
         TextureWrapper* arrowTexture;  
+        int currentFrame;
+        int counter = 0;
+        int time;
+        SDL_RendererFlip arrFlip;
 };
 
 

@@ -26,7 +26,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         if(pWindow!=0){
             pRenderer=SDL_CreateRenderer(pWindow,-1,0);
             if (pRenderer!=0){
-                SDL_SetRenderDrawColor(pRenderer,255,255,255,255);
+                SDL_SetRenderDrawColor(pRenderer,100,190,150,255);
 
                 if (TTF_Init() == -1)
                 {
@@ -63,7 +63,6 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 
         //For enemy
         enemies = new Enemy(pRenderer, vec{64, 1536-52}, vec{64, 640});
-        enem = new Enemy2(pRenderer, {456,200});
 
         //Initialize enemy
         enemy1.push_back(new Enemy(pRenderer, vec{456, 400}, vec{456, 886}));
@@ -112,8 +111,6 @@ void Game::render()
             healthTexture->loadFromRenderedText("LIVES  : " + player->getLives(),color);
             healthTexture->render(10, 10);
             player->render(currentLevel->camera);
-            //enemies->render(currentLevel->camera);
-            enem->render(level1->camera, player->getPosition());
             for(auto it = enemy1.begin(); it != enemy1.end(); it++)
             {
                 (*it)->render(currentLevel->camera);
@@ -414,7 +411,7 @@ void Game::Collider(Player* player,Level* level)
     int FirstRow = ((player->getPosition().y)/64 - 1) > 0 ? (player->getPosition().y)/64 - 1 : 0;
     int LastRow = FirstRow + 4 >= level->mRow - 1 ? level->mRow - 1 : FirstRow+4;
     int FirstColumn = (player->getPosition().x)/64 - 2 > 0 ? (player->getPosition().x)/64 - 2 : 0;
-    int LastColumn = FirstColumn + 5 >= level->mCol - 1 ? level->mCol - 1 : FirstColumn + 5;
+    int LastColumn = FirstColumn + 5 >= level->mCol ? level->mCol : FirstColumn + 5;
     for (int row = LastRow;row>=FirstRow;row--)
     {
         for ( int column = FirstColumn; column < LastColumn; column++)
