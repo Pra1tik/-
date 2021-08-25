@@ -87,6 +87,32 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
         enemy1a.push_back(new Enemy2(pRenderer, vec{3058, 912}));
         enemy1a.push_back(new Enemy2(pRenderer, vec{3175, 1296}));
 
+        enemy2.push_back(new Enemy(pRenderer, vec{305, 3024}, vec{305,560}));
+        enemy2.push_back(new Enemy(pRenderer, vec{633, 2704}, vec{633, 798}));
+        enemy2.push_back(new Enemy(pRenderer, vec{323, 2512}, vec{323, 553}));
+        enemy2.push_back(new Enemy(pRenderer, vec{1798, 2128}, vec{1798, 1913}));
+        enemy2.push_back(new Enemy(pRenderer, vec{72, 208}, vec{72, 252}));
+        enemy2.push_back(new Enemy(pRenderer, vec{372, 208}, vec{372, 552}));
+        enemy2.push_back(new Enemy(pRenderer, vec{652, 208}, vec{652, 832}));
+        enemy2.push_back(new Enemy(pRenderer, vec{932, 208}, vec{208, 1080}));
+        
+        enemy2a.push_back(new Enemy2(pRenderer, vec{500, 2832}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{888, 2704}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{768, 2320}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{878, 2320}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{1018, 2192}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{1308, 2000}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{1488, 2000}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{2297, 2064}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{3018, 1936}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{3098, 1936}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{3200, 1424}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{1725, 592}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{1085, 208}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{2485, 464}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{2805, 656}));
+        enemy2a.push_back(new Enemy2(pRenderer, vec{2872, 1040}));
+
 
         //For bullet
         playerBullet = new bullet;
@@ -125,6 +151,17 @@ void Game::render()
                 }
 
             }
+            else if (levelNum == 2)
+            {
+                for(auto it = enemy2.begin(); it != enemy2.end(); it++)
+                {
+                    (*it)->render(currentLevel->camera);
+                }
+                for(auto it = enemy2a.begin(); it != enemy2a.end(); it++)
+                {
+                    (*it)->render(currentLevel->camera, player->getPosition());                
+                }
+            }
             
             if(playerBullet->bulletAlive)
             {
@@ -133,30 +170,28 @@ void Game::render()
 
             
 
-            if(killCount >= TOTAL_ENEMIES)
-            {
-                if(levelNum == 1)
+                if(levelNum == 1 && killCount > enemy1.size() + enemy2.size())
                 {
                     levelCompleteTexture->loadFromRenderedText("Level 1 complete", color);
-                    levelCompleteTexture->render(WindowWidth/2-10, WindowHeight/2-10);
+                    levelCompleteTexture->render(WindowWidth/2-levelCompleteTexture->getWidth()/2, WindowHeight/2-levelCompleteTexture->getHeight()/2);
                     SDL_RenderPresent(pRenderer);         
                     SDL_Delay(1000);
                     levelNum = 2;
                     currentLevel = level2;
                     killCount = 0;
 
-                    player->setPosition(500, 100);
+                    player->setPosition(100, 3024);
                 }
-                else if(levelNum == 2)
+                else if(levelNum == 2 && killCount > enemy2.size() + enemy2a.size())
                 {
                     //Game over
                     levelCompleteTexture->loadFromRenderedText("Game completed", color);
-                    levelCompleteTexture->render(WindowWidth/2-10, WindowHeight/2-10);
+                    levelCompleteTexture->render(WindowWidth/2-levelCompleteTexture->getWidth()/2, WindowHeight/2-levelCompleteTexture->getHeight()/2);
                     SDL_RenderPresent(pRenderer);         
                     SDL_Delay(1000);
                     killCount = 0;
                 }
-            }
+            
 
             break;
         case SELECT_SCREEN:
@@ -248,6 +283,51 @@ void Game::update()
                     
                 }
         
+            }
+            else if (levelNum == 2)
+            {
+                 for(auto it = enemy2.begin(); it != enemy2.end(); it++)
+                {
+                    if(playerBullet->bulletAlive && !(*it)->dead)
+                    {
+                        playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        
+                    }
+                    if(!(*it)->dead)
+                    {
+                        enemyUpdateValue = (*it)->update(player->getPosition());
+                        if (enemyUpdateValue == 3)
+                        {
+                            player->reduceLife(0);
+                        }
+                    
+                    }
+                    
+                }
+
+                for(auto it = enemy2a.begin(); it != enemy2a.end(); it++)
+                {
+                    if(playerBullet->bulletAlive && !(*it)->dead)
+                    {
+                        playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        
+                    }
+                    if(!(*it)->dead)
+                    {
+                        enemyUpdateValue = (*it)->update(player->getPosition());
+                        if (enemyUpdateValue == 3)
+                        {
+                            player->reduceLife(0);
+                        }
+
+                        if((*it)->arrowPlayerCollision(SDL_Rect{player->getPosition().x, player->getPosition().y, playerWidth, playerHeight}))
+                        {
+                            player->reduceLife(1);
+                        }
+        
+                    }
+                    
+                }
             }
             
             

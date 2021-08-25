@@ -10,7 +10,7 @@ Player::Player(SDL_Renderer* renderer)
 
     
     //Set initial position
-    setPosition(500, 100);
+    setPosition(380, 100);
     setVelocity(5, -1);
     setAccleration(0, 0);
 
@@ -103,6 +103,12 @@ void Player::update()
 
 
     mPos.x += mAcc.x * mVel.x;
+    
+    if (mPos.y > 4000)
+    {
+        reduceLife(1);
+        setPosition(100, 3024);
+    }
 }
 
 

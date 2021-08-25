@@ -12,6 +12,7 @@ class Enemy
         bool bulletEnemyCollision(SDL_Rect Bullet);
         void render(SDL_Rect camera);
 
+        int getDeadEnemies() {return deadEnemies;}
 
         vec ePos, eVel;
         vec xRange, yRange;
@@ -21,6 +22,7 @@ class Enemy
         int nextShot = 0;
         bool die = false;
         int deadFrame;
+        int deadEnemies;
     private:
         bool stopRendering;
         int counter = 0;  

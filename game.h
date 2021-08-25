@@ -87,6 +87,7 @@ class Game{
         std::vector<Enemy*> enemy1;
         std::vector<Enemy*> enemy2;
         std::vector<Enemy2*> enemy1a;
+        std::vector<Enemy2*> enemy2a;
 
         TextureWrapper* bulletTexture;
 

@@ -21,7 +21,7 @@ class Player : public Character
         bool shake = false;
 
     private:
-        int mlives = 5;
+        int mlives = 50;
         float dt = 0;
         bool mAlive = true;
         bool jumpFlag = false;

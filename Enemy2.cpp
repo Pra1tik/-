@@ -51,7 +51,6 @@ int Enemy2::update(vec pPos)
                 arrow1.arrowtPos = {ePos.x, ePos.y+eTexture->getHeight()/2 - 20};
 
                 arrow1.arrowVel.x = (pPos.x >= ePos.x ? 8 : -8);
-                arrFlip = pPos.x > ePos.x ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
             }
                 
         }
@@ -131,7 +130,8 @@ void Enemy2::render(SDL_Rect camera, vec pPos)
 
     if(arrow1.arrowAlive)
     {
-        arrowTexture->render(arrow1.arrowtPos.x-camera.x, arrow1.arrowtPos.y-camera.y, 0, SDL_FLIP_HORIZONTAL);
+        double angle = ePos.x > pPos.x ? 180.0 : 0.0;
+        arrowTexture->render(arrow1.arrowtPos.x-camera.x, arrow1.arrowtPos.y-camera.y, NULL, 1,angle);
     }
 }
 
