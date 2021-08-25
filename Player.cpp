@@ -108,6 +108,7 @@ void Player::update()
     {
         reduceLife(1);
         setPosition(100, 3024);
+        falling = false;
     }
 }
 

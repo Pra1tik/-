@@ -43,6 +43,7 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
                 TTF_Font* font = TTF_OpenFont("graphics/Fonts/pacifico/Pacifico.ttf",60);
                 healthTexture = new TextureWrapper(pRenderer, font);
                 levelCompleteTexture = new TextureWrapper(pRenderer, font);
+                killCountTexture = new TextureWrapper(pRenderer, font);
             }
             else{
                 std::cout << "Error " <<SDL_GetError()<<std::endl;
@@ -126,6 +127,10 @@ bool Game::init(const char* title,int xpos, int ypos, int height, int width, boo
 }
 void Game::render()
 {
+    std::string str;
+    std::stringstream ss;
+    ss << killCount;
+    ss >> str;
     enemyDead = enemies->dead;
     SDL_RenderClear(pRenderer);
     switch (currentGameState)
@@ -137,6 +142,8 @@ void Game::render()
             currentLevel->render();
             healthTexture->loadFromRenderedText("LIVES  : " + player->getLives(),color);
             healthTexture->render(10, 10);
+            killCountTexture->loadFromRenderedText("KillCount  : " + str,color);
+            killCountTexture->render(WindowWidth-killCountTexture->getWidth()-10, 10);
             player->render(currentLevel->camera);
 
             if(levelNum == 1)
@@ -170,7 +177,7 @@ void Game::render()
 
             
 
-                if(levelNum == 1 && killCount > enemy1.size() + enemy2.size())
+                if(levelNum == 1 && killCount >= enemy1.size() + enemy1a.size())
                 {
                     levelCompleteTexture->loadFromRenderedText("Level 1 complete", color);
                     levelCompleteTexture->render(WindowWidth/2-levelCompleteTexture->getWidth()/2, WindowHeight/2-levelCompleteTexture->getHeight()/2);
@@ -182,7 +189,7 @@ void Game::render()
 
                     player->setPosition(100, 3024);
                 }
-                else if(levelNum == 2 && killCount > enemy2.size() + enemy2a.size())
+                else if(levelNum == 2 && killCount >= enemy2.size() + enemy2a.size())
                 {
                     //Game over
                     levelCompleteTexture->loadFromRenderedText("Game completed", color);
@@ -245,7 +252,7 @@ void Game::update()
                     if(playerBullet->bulletAlive && !(*it)->dead)
                     {
                         playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
-                        
+                        if(!playerBullet->bulletAlive) killCount++;
                     }
                     if(!(*it)->dead)
                     {
@@ -264,6 +271,7 @@ void Game::update()
                     if(playerBullet->bulletAlive && !(*it)->dead)
                     {
                         playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        if(!playerBullet->bulletAlive) killCount++;
                         
                     }
                     if(!(*it)->dead)
@@ -291,6 +299,7 @@ void Game::update()
                     if(playerBullet->bulletAlive && !(*it)->dead)
                     {
                         playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        if(!playerBullet->bulletAlive) killCount++;
                         
                     }
                     if(!(*it)->dead)
@@ -310,6 +319,7 @@ void Game::update()
                     if(playerBullet->bulletAlive && !(*it)->dead)
                     {
                         playerBullet->bulletAlive = !((*it)->bulletEnemyCollision({playerBullet->bulletPos.x,playerBullet->bulletPos.y, bulletTexture->getWidth(), bulletTexture->getHeight()}));
+                        if(!playerBullet->bulletAlive) killCount++;
                         
                     }
                     if(!(*it)->dead)
@@ -330,7 +340,7 @@ void Game::update()
                 }
             }
             
-            
+            //std::cout << killCount << std::endl;
             
 
             //For bullet
