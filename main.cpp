@@ -38,5 +38,6 @@ int main(int argc,char* argv[])
     }
     
     pGame->clean();
+    delete pGame;
     return 0;
 }

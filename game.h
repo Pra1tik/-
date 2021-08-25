@@ -15,7 +15,7 @@
 class Game{
     public:
         Game(){}
-        ~Game(){}
+        ~Game();
         bool init(const char* title,int xpos, int ypos, int height, int width, bool isFullscreen);
         void update();
         void render();
@@ -53,7 +53,6 @@ class Game{
 
         // pointer variables for different classes
         class Player* player;
-        class Background* back;
         class collider* pCollider;
         class collider* tCollider;
         class StartScreen* startScreen;

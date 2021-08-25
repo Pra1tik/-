@@ -555,3 +555,38 @@ void Game::Collider(Player* player,Level* level)
         }
     }
 }
+
+
+Game::~Game()
+{
+    delete player;
+    delete pCollider;
+    delete tCollider;
+    delete startScreen;
+    delete controls;
+    delete level1;
+    delete level2;
+    delete enemyLocation;
+    delete playerBullet;
+    delete enemyBullet;
+    delete healthTexture;
+    delete levelCompleteTexture;
+    delete killCountTexture;
+
+    for(auto enemy : enemy1)
+    {
+        delete enemy;
+    }
+    for(auto enemy : enemy1a)
+    {
+        delete enemy;
+    }
+    for(auto enemy : enemy2)
+    {
+        delete enemy;
+    }
+    for(auto enemy : enemy2a)
+    {
+        delete enemy;
+    }
+}
