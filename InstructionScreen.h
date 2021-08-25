@@ -1,8 +1,9 @@
 #pragma once
+#include "GameStateManager.h"
 #include "Texture.h"
 #include "math.h"
 
-class InstructionScreen
+class InstructionScreen : public GameStateManager
 {
     private:
         TextureWrapper* Instruction;
@@ -13,6 +14,6 @@ class InstructionScreen
     public:
         InstructionScreen(SDL_Renderer* pRenderer);
         ~InstructionScreen();
-        void render();
+        void render() override;
         bool isInsideReturn(vec mousePos);
 };

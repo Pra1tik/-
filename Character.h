@@ -8,8 +8,8 @@ class Character
     public:
         Character() {};
 
-        virtual void update() {};
-        virtual void render(SDL_Rect rect) {};
+        virtual void update() = 0;
+        virtual void render(SDL_Rect rect) = 0;
 
         void setPosition(int x, int y) { mPos.x = x; mPos.y = y; }
         void setVelocity(int x, int y) { mVel.x = x; mVel.y = y; }

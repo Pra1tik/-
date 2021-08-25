@@ -1,10 +1,11 @@
 #pragma once
+#include "GameStateManager.h"
 #include "Texture.h"
 #include "defaultVar.h"
 #include "math.h"
 #include <SDL2/SDL_ttf.h>
 
-class SelectScreen
+class SelectScreen : public GameStateManager
 {
     private:
         SDL_Rect playButton;
@@ -20,7 +21,7 @@ class SelectScreen
     public:
         SelectScreen (SDL_Renderer* pRenderer);
         ~SelectScreen ();
-        void render();
+        void render() override;
         bool isInsidePlay(vec mousePos);
         bool isInsideExit(vec mousePos);
         bool isInsideInstruction(vec mousePos);
