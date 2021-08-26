@@ -1,23 +1,21 @@
 #pragma once
-#include "Texture.h"
-#include "math.h"
+#include "enemyBase.h"
 
-class Enemy2
+class Enemy2 : public EnemyBase
 {
     public:
         Enemy2(SDL_Renderer* renderer, vec pos);
         ~Enemy2();
 
-        int update(vec pPos);
-        void render(SDL_Rect camera, vec pPos);
-        bool bulletEnemyCollision(const SDL_Rect& Bullet);
+        int update(vec pPos) override;
+        void render(const SDL_Rect& camera, vec pPos = vec{0,0}) override;
+        bool bulletEnemyCollision(const SDL_Rect& Bullet) override;
         bool arrowPlayerCollision(const SDL_Rect& player);
         void animate();
 
-        vec ePos;
+        
         TextureWrapper* eTexture;
-        bool dead;
-        int nextShot = 0;
+        
 
         struct arrow
         {
@@ -28,11 +26,9 @@ class Enemy2
         };
         arrow arrow1;
         
-    private:
-        bool stopRendering;
+    private:       
         TextureWrapper* arrowTexture;  
         int currentFrame;
-        int counter = 0;
         int time;
         SDL_RendererFlip arrFlip;
 };

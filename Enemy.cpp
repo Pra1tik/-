@@ -56,7 +56,7 @@ int Enemy::update(vec pPos) //2 for collsion with bullet
     return 0;
 }
 
-bool Enemy::bulletEnemyCollision(SDL_Rect Bullet)
+bool Enemy::bulletEnemyCollision(const SDL_Rect& Bullet)
 {
     SDL_Rect eRect = {ePos.x, ePos.y, eTexture->getWidth()/6, eTexture->getHeight()};
     
@@ -70,7 +70,7 @@ bool Enemy::bulletEnemyCollision(SDL_Rect Bullet)
     return false;
 }
 
-void Enemy::render(SDL_Rect camera)
+void Enemy::render(const SDL_Rect& camera, vec pPos)
 {
     SDL_RendererFlip flip = eVel.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
     

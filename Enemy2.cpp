@@ -98,7 +98,7 @@ bool Enemy2::arrowPlayerCollision(const SDL_Rect& playerRect)
     return false;
 }
 
-void Enemy2::render(SDL_Rect camera, vec pPos)
+void Enemy2::render(const SDL_Rect& camera, vec pPos)
 {
     SDL_RendererFlip flip = ePos.x > pPos.x ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     SDL_Rect src = {currentFrame * eTexture->getWidth()/22 , 0 , eTexture->getWidth()/22, eTexture->getHeight()};
