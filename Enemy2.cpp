@@ -44,7 +44,7 @@ int Enemy2::update(vec pPos)
            //Shoot the player
             int dx = abs(pPos.x-ePos.x);
             int dy = abs(pPos.y - ePos.y);
-            if(!arrow1.arrowAlive && dx <= WindowWidth && dy <= playerHeight)
+            if(!arrow1.arrowAlive && dx <= WindowWidth-100 && dy <= playerHeight)
             {
                 animate();
                 arrow1.arrowAlive = true;

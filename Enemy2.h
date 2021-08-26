@@ -25,9 +25,9 @@ class Enemy2 : public EnemyBase
             bool arrowAlive = false;
         };
         arrow arrow1;
+        TextureWrapper* arrowTexture;  
         
     private:       
-        TextureWrapper* arrowTexture;  
         int currentFrame;
         int time;
         SDL_RendererFlip arrFlip;

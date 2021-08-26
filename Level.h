@@ -10,7 +10,7 @@ float random_float(const float min, const float max);
 
 class Level
 {
-    public:
+    private:
         int mLevelNum;
         int mLWidth, mLHeight;
         int mRow, mCol;
@@ -22,13 +22,13 @@ class Level
         SDL_Renderer* mRenderer;
         SDL_Rect camera;
         bool shake = false;
-        //class Game* mGame = NULL;
+        
     public:
         Level(const char filename[], SDL_Renderer* renderer, int levelNum);
         ~Level();
 
         void update(vec pPos, TextureWrapper* pTexture);
         void render();
-       // void setGame(class Game* game) { mGame = game; }
+        friend class Game; 
 
 };

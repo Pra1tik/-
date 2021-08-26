@@ -286,11 +286,45 @@ void Game::update()
                         {
                             player->reduceLife(1);
                         }
-        
-                    }
+
+                //         if((*it)->arrow1.arrowAlive)
+                //         {
+                            
+                //             if((*it)->arrow1.arrowtPos.x > currentLevel->camera.x + WindowWidth)
+                //             {
+                //                 (*it)->arrow1.arrowAlive = false;
+                //             } 
+                //             else
+                //             {
+                //                 int arrowX = (*it)->arrow1.arrowtPos.x / (currentLevel->tileWidth * currentLevel->scale);
+                //                 int arrowY = (*it)->arrow1.arrowtPos.x / (currentLevel->tileHeight * currentLevel->scale);
+                //                 SDL_Rect arrowRect = {(*it)->arrow1.arrowtPos.x, (*it)->arrow1.arrowtPos.x, (*it)->arrowTexture->getWidth(), (*it)->arrowTexture->getHeight()};
+                                
+                //                 for(int i = 0; i < 1; i++)
+                //                 {
+                //                     for(int j = 0; j < 1; j++)
+                //                     {
+                //                         if(arrowY+i < currentLevel->mRow && arrowX+j < currentLevel->mCol)
+                //                         {
+                //                             if(currentLevel->mTileMatrix[arrowY+i][arrowX+j] != -1)
+                //                             {
+                //                                 SDL_Rect tile = {(arrowX+i)*currentLevel->tileWidth*currentLevel->scale, (arrowY+j)*currentLevel->tileHeight*currentLevel->scale, currentLevel->tileWidth*currentLevel->scale, currentLevel->tileHeight*currentLevel->scale};
+
+                //                                 if(arrowRect.x < (tile.x + tile.w) && (arrowRect.x + arrowRect.w) > tile.x &&
+                //                                         arrowRect.y < (tile.y + tile.h) && (arrowRect.y + arrowRect.h) > tile.y)
+                //                                 {
+                //                                     (*it)->arrow1.arrowAlive = false;
+                //                                 }
+                //                             }
+                //                         }
+                //                     }
+                //                 }
+                //             }
+                //         }
+                        
+                   }
                     
                 }
-        
             }
             else if (levelNum == 2)
             {
@@ -342,7 +376,8 @@ void Game::update()
             
             //std::cout << killCount << std::endl;
             
-
+            
+            
             //For bullet
             if(playerBullet->bulletAlive)
             {
